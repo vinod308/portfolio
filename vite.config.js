@@ -10,7 +10,7 @@ const ROUTES = ['/', '/projects', '/about', '/contact', ...caseStudies.map((p) =
  * Fills absolute URLs into index.html (__SITE_URL__) and, when VITE_SITE_URL
  * is set, emits sitemap.xml. robots.txt is always emitted.
  */
-function siteMeta(siteUrl) {
+function siteMeta(siteUrl, trailingSlash) {
   return {
     name: 'site-meta',
     transformIndexHtml(html) {
