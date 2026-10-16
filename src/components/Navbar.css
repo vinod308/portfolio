@@ -1,18 +1,27 @@
+/*
+ * Header states
+ *  - top of page: full width, transparent. On pages whose top is light (the
+ *    homepage hero) it uses the light theme and sits on white.
+ *  - scrolled (or menu open): the bar shrinks into a floating white pill with
+ *    a soft shadow, always light-themed so it reads over dark or light sections.
+ */
 .navbar {
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid transparent;
-  transition: background-color var(--duration-base) var(--ease-out),
-    border-color var(--duration-base) var(--ease-out);
+  /* Fixed height: switching to the pill never shifts the page below */
+  display: flex;
+  align-items: center;
+  height: var(--nav-height);
 }
 
-.navbar--scrolled,
-.navbar--open {
-  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-  border-bottom-color: var(--color-border);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+/* .theme-light paints a background by default; the header manages its own. */
+.navbar.theme-light {
+  background-color: transparent;
+}
+
+.navbar--light-top:not(.navbar--scrolled) {
+  background-color: #ffffff;
 }
 
 .navbar__inner {
@@ -22,6 +31,31 @@
   justify-content: space-between;
   gap: var(--space-5);
   min-height: var(--nav-height);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition:
+    max-width var(--duration-slow) var(--ease-out),
+    min-height var(--duration-slow) var(--ease-out),
+    padding var(--duration-slow) var(--ease-out),
+    background-color var(--duration-slow) var(--ease-out),
+    border-color var(--duration-slow) var(--ease-out),
+    box-shadow var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+/* ---- Floating pill ---- */
+.navbar--scrolled .navbar__inner {
+  transform: translateY(var(--space-2));
+  max-width: min(64rem, calc(100% - 2 * var(--space-3)));
+  min-height: 3.5rem;
+  padding-inline: var(--space-3) var(--space-2);
+  border-color: rgb(11 18 32 / 0.08);
+  background: rgb(255 255 255 / 0.96);
+  box-shadow:
+    0 1px 2px rgb(11 18 32 / 0.06),
+    0 12px 32px -12px rgb(11 18 32 / 0.25);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
 }
 
 .navbar__actions {
@@ -33,14 +67,24 @@
 .navbar__link {
   display: block;
   padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
 }
 
 .navbar__link:hover {
   color: var(--color-text);
+}
+
+.navbar__link[aria-current="page"] {
+  color: var(--color-text);
+}
+
+.theme-light .navbar__link:hover {
+  background: rgb(11 18 32 / 0.05);
 }
 
 /* ---- Mobile: disclosure menu ---- */
@@ -75,22 +119,29 @@
   display: none;
 }
 
+/* Open menu: a white card dropping out of the pill */
 .navbar--open .navbar__links {
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--space-2));
   left: 0;
   right: 0;
   display: grid;
   gap: var(--space-1);
-  padding: var(--space-3) var(--gutter) var(--space-5);
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-5) var(--space-5);
+  border: 1px solid rgb(11 18 32 / 0.08);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  box-shadow: 0 24px 48px -20px rgb(11 18 32 / 0.35);
 }
 
 .navbar--open .navbar__link {
   padding: var(--space-3) 0;
   font-size: var(--text-lg);
   color: var(--color-text);
+}
+
+.navbar--open .navbar__link:hover {
+  background: none;
 }
 
 .navbar__menu-cta {
@@ -119,8 +170,9 @@
     align-items: center;
     gap: var(--space-1);
     padding: 0;
-    background: none;
     border: 0;
+    background: none;
+    box-shadow: none;
   }
 
   .navbar--open .navbar__link {

@@ -1,5 +1,6 @@
 .hero {
   position: relative;
+  background-color: #ffffff;
   padding-block: clamp(3rem, 1rem + 7vw, 7rem) clamp(4rem, 2rem + 6vw, 7.5rem);
   overflow: hidden;
   isolation: isolate;
@@ -10,8 +11,8 @@
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(60rem 30rem at 85% 10%, rgb(77 124 254 / 0.16), transparent 60%),
-    radial-gradient(40rem 24rem at 10% 90%, rgb(72 214 197 / 0.07), transparent 60%);
+    radial-gradient(46rem 34rem at 82% 42%, rgb(72 214 197 / 0.16), transparent 62%),
+    radial-gradient(40rem 28rem at 95% 0%, rgb(77 124 254 / 0.12), transparent 60%);
 }
 
 .hero__backdrop::after {
@@ -21,8 +22,8 @@
   background-image: linear-gradient(var(--color-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
   background-size: 48px 48px;
-  opacity: 0.3;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 25%, transparent 75%);
+  opacity: 0.55;
+  mask-image: radial-gradient(ellipse 70% 65% at 70% 45%, #000 15%, transparent 72%);
 }
 
 .hero__grid {
@@ -47,7 +48,7 @@
 .hero__mark {
   width: clamp(3.25rem, 2.5rem + 2vw, 4.5rem);
   height: auto;
-  filter: drop-shadow(0 6px 24px rgb(72 214 197 / 0.18));
+  filter: drop-shadow(0 8px 20px rgb(47 91 224 / 0.18));
 }
 
 .hero__eyebrow {
@@ -74,7 +75,7 @@
 }
 
 .hero__line:last-child .hero__line-inner {
-  background: linear-gradient(90deg, var(--cool-white) 0%, #a9c0ff 55%, var(--signal-teal) 100%);
+  background: linear-gradient(90deg, var(--midnight-navy) 0%, #2f5be0 45%, #0b7a6e 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -143,8 +144,11 @@
 .hero-visual {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgb(17 29 48 / 0.9), rgb(11 18 32 / 0.9));
-  box-shadow: var(--shadow-raised), 0 0 0 1px rgb(255 255 255 / 0.02) inset;
+  background: rgb(255 255 255 / 0.9);
+  box-shadow:
+    0 1px 2px rgb(11 18 32 / 0.05),
+    0 30px 60px -28px rgb(11 18 32 / 0.28);
+  backdrop-filter: blur(6px);
   overflow: hidden;
 }
 
@@ -188,7 +192,7 @@
 
 .hv-flow {
   fill: none;
-  stroke: var(--electric-blue);
+  stroke: var(--color-accent);
   stroke-width: 1.5;
   stroke-dasharray: 3 7;
   opacity: 0.8;
@@ -212,11 +216,12 @@
 }
 
 .hv-node--accent rect {
-  stroke: var(--electric-blue);
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
 }
 
 .hv-node--signal rect {
-  stroke: var(--signal-teal);
+  stroke: var(--color-signal);
   stroke-dasharray: 4 3;
 }
 
@@ -234,7 +239,7 @@
 }
 
 .hv-packet__core {
-  fill: var(--signal-teal);
+  fill: var(--color-signal);
 }
 
 .hero-visual__status {
@@ -255,6 +260,6 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--signal-teal);
-  box-shadow: 0 0 0 3px rgb(72 214 197 / 0.18);
+  background: var(--color-signal);
+  box-shadow: 0 0 0 3px rgb(11 122 110 / 0.18);
 }

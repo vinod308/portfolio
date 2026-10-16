@@ -1,0 +1,9 @@
+node_modules
+dist
+.github
+*.log
+final-cv.pdf
+server/.env
+.env
+.env.*
+!.env.example

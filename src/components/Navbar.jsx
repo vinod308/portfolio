@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router'
+import { NavLink, useLocation } from 'react-router'
 import Container from './Container.jsx'
 import Logo from './Logo.jsx'
 import Button from './Button.jsx'
@@ -49,11 +49,22 @@ export default function Navbar({ links = [], cta }) {
   })
 
   const hasMenu = links.length > 0
+  // Pages whose top section is light (the homepage hero) get a light header at rest.
+  const lightTop = location.pathname === '/'
+  const light = lightTop || scrolled || open
 
   return (
     <header
       ref={ref}
-      className={`navbar ${scrolled ? 'navbar--scrolled' : ''} ${open ? 'navbar--open' : ''}`}
+      className={[
+        'navbar',
+        scrolled || open ? 'navbar--scrolled' : '',
+        open ? 'navbar--open' : '',
+        lightTop ? 'navbar--light-top' : '',
+        light ? 'theme-light' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       <Container as="nav" className="navbar__inner" aria-label="Primary">
         <Logo to="/" size={36} tagline />
@@ -62,9 +73,9 @@ export default function Navbar({ links = [], cta }) {
           <ul className="navbar__links" id={menuId} role="list">
             {links.map((link) => (
               <li key={link.to}>
-                <Link className="navbar__link" to={link.to}>
+                <NavLink className="navbar__link" to={link.to} end={link.to === '/'}>
                   {link.label}
-                </Link>
+                </NavLink>
               </li>
             ))}
             {cta && (
