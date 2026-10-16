@@ -1,0 +1,102 @@
+/* Shared section scaffolding, chips and cards used across homepage sections */
+.section {
+  position: relative;
+  padding-block: var(--section-space);
+}
+
+.section--tight {
+  padding-block: calc(var(--section-space) * 0.7);
+}
+
+.section__head {
+  margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+}
+
+.section__head--split {
+  display: grid;
+  gap: var(--space-5);
+  align-items: end;
+}
+
+@media (min-width: 64rem) {
+  .section__head--split {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.card {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.text-link:hover {
+  color: var(--color-link-hover);
+}
+
+.text-link--muted {
+  color: var(--color-text-muted);
+}
+
+.text-link svg {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.text-link:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.illustrative-note {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.illustrative-note::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+/* Inner pages */
+.page {
+  padding-block: clamp(2.5rem, 1.5rem + 4vw, 5rem) var(--section-space);
+}

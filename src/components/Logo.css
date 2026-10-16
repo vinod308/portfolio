@@ -1,0 +1,91 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.logo:hover {
+  color: var(--color-text);
+}
+
+/* Brand colours for the mark (dark surfaces by default) */
+.logo-mark {
+  --logo-from: var(--electric-blue);
+  --logo-to: var(--signal-teal);
+  --logo-hub: var(--signal-teal);
+  --logo-node-ring: var(--cool-white);
+  --logo-node-fill: var(--midnight-navy);
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.theme-light .logo-mark {
+  --logo-from: #2f5be0;
+  --logo-to: #0b7a6e;
+  --logo-hub: #0b7a6e;
+  --logo-node-ring: var(--midnight-navy);
+  --logo-node-fill: #ffffff;
+}
+
+.logo-mark .vk-pulse {
+  stroke: #ffffff;
+  opacity: 0;
+  filter: drop-shadow(0 0 2px var(--signal-teal));
+}
+
+.logo-mark .vk-node {
+  fill: var(--logo-node-fill);
+  stroke: var(--logo-node-ring);
+  transition: fill var(--duration-base) var(--ease-out);
+}
+
+.logo-mark .vk-hub {
+  fill: var(--logo-hub);
+}
+
+.logo-mark .vk-hub-core {
+  fill: var(--logo-node-fill);
+}
+
+.logo-mark .vk-ring {
+  stroke: var(--logo-hub);
+  opacity: 0;
+}
+
+/* Hover: nodes light up teal */
+a.logo:hover .vk-node,
+a.logo:focus-visible .vk-node {
+  fill: var(--logo-hub);
+}
+
+.logo__text {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.logo__wordmark {
+  font-size: 1.0625rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.logo__tagline {
+  color: var(--color-signal);
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 22.5rem) {
+  .navbar .logo__tagline {
+    display: none;
+  }
+}

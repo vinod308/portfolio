@@ -1,0 +1,58 @@
+/* ---- Portrait ---- */
+.portrait {
+  position: relative;
+  width: 100%;
+  max-width: 20rem;
+  margin-bottom: var(--space-2);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+}
+
+.portrait__img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+/* Fade the photo into the navy page at the bottom so the caption reads */
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 40%;
+  background: linear-gradient(180deg, transparent, rgb(11 18 32 / 0.85));
+  pointer-events: none;
+}
+
+.portrait__caption {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--cool-white);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.portrait__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal-teal);
+  box-shadow: 0 0 0 3px rgb(72 214 197 / 0.2);
+}
+
+@media (min-width: 64rem) {
+  /* Sticky column must fit the viewport: keep the photo compact */
+  .portrait {
+    max-width: 15rem;
+  }
+}

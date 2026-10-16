@@ -1,0 +1,26 @@
+.page-header {
+  display: grid;
+  gap: var(--space-7);
+  margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+}
+
+.page-header__main {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+  align-content: start;
+}
+
+.page-header__extra {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+@media (min-width: 64rem) {
+  .page-header--split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: center;
+  }
+}

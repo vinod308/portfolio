@@ -1,0 +1,52 @@
+/* ---- Capability list with connector rail ---- */
+.cap-list {
+  position: relative;
+  padding-left: 2.25rem;
+}
+
+.cap-rail {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 0.3rem;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.cap-rail__fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--electric-blue), var(--signal-teal));
+}
+
+.cap-list__items {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.cap {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.cap__node {
+  position: absolute;
+  top: 0.15rem;
+  left: calc(-2.25rem + 0.3rem - 5px);
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--color-signal);
+  border-radius: 50%;
+  background: var(--color-bg);
+}
+
+.cap__title {
+  font-size: var(--text-xl);
+}
+
+.cap__body {
+  max-width: 36rem;
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,36 @@
+.about {
+  border-top: 1px solid var(--color-border);
+}
+
+.about__grid {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .about__grid {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(3rem, 1rem + 5vw, 6rem);
+    align-items: start;
+  }
+}
+
+/* Sticky only when the whole intro (photo + text) fits in the viewport */
+@media (min-width: 64rem) and (min-height: 64rem) {
+  .about__intro {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-6));
+  }
+}
+
+.about__intro {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.about__intro > p {
+  max-width: 34rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}

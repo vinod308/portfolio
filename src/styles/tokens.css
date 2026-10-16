@@ -1,0 +1,165 @@
+/*
+ * Design tokens.
+ * Primitives hold raw values; components use only the semantic tokens below
+ * them, so a theme change touches this file alone.
+ */
+:root {
+  /* ---- Primitive palette ---- */
+  --midnight-navy: #0b1220;
+  --panel-navy: #111d30;
+  --panel-navy-raised: #16253c;
+  --electric-blue: #4d7cfe;
+  --electric-blue-hover: #6a92ff;
+  --electric-blue-strong: #2f5be0; /* white text on this passes AA (5.6:1) */
+  --electric-blue-strong-hover: #2349c4;
+  --signal-teal: #48d6c5;
+  --cool-white: #f5f7fa;
+  --steel-grey: #94a3b8;
+  --border-navy: #27354a;
+  --border-navy-strong: #3a4c66;
+
+  /* ---- Semantic colour ---- */
+  --color-bg: var(--midnight-navy);
+  --color-surface: var(--panel-navy);
+  --color-surface-raised: var(--panel-navy-raised);
+  --color-text: var(--cool-white);
+  --color-text-muted: var(--steel-grey);
+  --color-border: var(--border-navy);
+  --color-border-strong: var(--border-navy-strong);
+
+  --color-accent: var(--electric-blue);
+  --color-accent-hover: var(--electric-blue-hover);
+  --color-signal: var(--signal-teal);
+
+  --color-button-primary-bg: var(--electric-blue-strong);
+  --color-button-primary-bg-hover: var(--electric-blue-strong-hover);
+  --color-button-primary-text: #ffffff;
+  --color-button-secondary-bg: transparent;
+  --color-button-secondary-bg-hover: var(--panel-navy-raised);
+  --color-button-secondary-text: var(--cool-white);
+  --color-button-secondary-border: var(--border-navy-strong);
+
+  --color-link: var(--cool-white);
+  --color-link-hover: var(--signal-teal);
+  --color-focus-ring: var(--signal-teal);
+  --color-selection-bg: rgb(77 124 254 / 0.35);
+
+  /* ---- Typography ---- */
+  --font-sans: "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, "SFMono-Regular", "Cascadia Code",
+    Consolas, "Liberation Mono", monospace;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Fluid type scale: 360px -> 1280px viewport */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: clamp(1.0625rem, 1.01rem + 0.25vw, 1.1875rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.5rem + 1.7vw, 2.875rem);
+  --text-4xl: clamp(2.375rem, 1.7rem + 3vw, 4.25rem);
+
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-normal: 1.6;
+  --tracking-tight: -0.025em;
+  --tracking-display: -0.035em;
+  --tracking-mono: 0.06em;
+
+  /* ---- Space, size, shape ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-space: clamp(4rem, 2.5rem + 6vw, 8rem);
+
+  --container-max: 72rem;
+  --container-narrow: 48rem;
+  --container-wide: 84rem;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
+  --nav-height: 4rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-full: 999px;
+
+  --shadow-raised: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -12px rgb(0 0 0 / 0.6);
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+
+/*
+ * Light sections. Apply .theme-light to a section and every component inside
+ * picks up the light semantic tokens. Text colours are darkened variants that
+ * keep WCAG AA contrast on Cool White (teal #0B7A6E, blue #2F5BE0).
+ */
+.theme-light {
+  --color-bg: var(--cool-white);
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-text: var(--midnight-navy);
+  --color-text-muted: #475569;
+  --color-border: #dfe5ee;
+  --color-border-strong: #c3ccd9;
+
+  --color-accent: #2f5be0;
+  --color-accent-hover: #2349c4;
+  --color-signal: #0b7a6e;
+
+  --color-button-primary-bg: var(--midnight-navy);
+  --color-button-primary-bg-hover: var(--panel-navy-raised);
+  --color-button-secondary-text: var(--midnight-navy);
+  --color-button-secondary-border: #c3ccd9;
+  --color-button-secondary-bg-hover: #eef2f8;
+
+  --color-link: var(--midnight-navy);
+  --color-link-hover: #2f5be0;
+  --color-focus-ring: #2f5be0;
+  --shadow-raised: 0 1px 2px rgb(11 18 32 / 0.06), 0 12px 32px -16px rgb(11 18 32 / 0.18);
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  color-scheme: light;
+}
+
+/* Dark island inside a light section (e.g. a console panel) */
+.theme-dark {
+  --color-bg: var(--midnight-navy);
+  --color-surface: var(--panel-navy);
+  --color-surface-raised: var(--panel-navy-raised);
+  --color-text: var(--cool-white);
+  --color-text-muted: var(--steel-grey);
+  --color-border: var(--border-navy);
+  --color-border-strong: var(--border-navy-strong);
+  --color-accent: var(--electric-blue);
+  --color-signal: var(--signal-teal);
+  --color-link: var(--cool-white);
+  --color-link-hover: var(--signal-teal);
+  --color-focus-ring: var(--signal-teal);
+  color: var(--color-text);
+  color-scheme: dark;
+}
