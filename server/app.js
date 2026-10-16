@@ -141,7 +141,8 @@ export function createApp({ config, transport, logger = consoleLogger, now = () 
       '/assets',
       express.static(path.join(DIST, 'assets'), { immutable: true, maxAge: '1y', fallthrough: false }),
     )
-    app.use(express.static(DIST, { index: false, maxAge: '1h' }))
+    // redirect:false: per-route folders (built for static hosts) must not 301 to a trailing slash
+    app.use(express.static(DIST, { index: false, redirect: false, maxAge: '1h' }))
     // SPA fallback: any other GET that wants HTML gets index.html, so
     // /projects/haylow and other client routes work on direct load.
     app.use((req, res, next) => {
