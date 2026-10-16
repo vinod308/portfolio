@@ -27,7 +27,8 @@ function siteMeta(siteUrl, trailingSlash) {
       const robots = ['User-agent: *', 'Allow: /', ...(siteUrl ? [`Sitemap: ${siteUrl}/sitemap.xml`] : []), '']
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robots.join('\n') })
       if (!siteUrl) return
-      const urls = ROUTES.map((r) => `  <url><loc>${siteUrl}${r === '/' ? '/' : r}</loc></url>`).join('\n')
+      const loc = (r) => (r === '/' ? '/' : trailingSlash ? `${r}/` : r)
+      const urls = ROUTES.map((r) => `  <url><loc>${siteUrl}${loc(r)}</loc></url>`).join('\n')
       this.emitFile({
         type: 'asset',
         fileName: 'sitemap.xml',
@@ -60,7 +61,7 @@ export default defineConfig(({ mode }) => {
   return {
     // '/portfolio/' for the GitHub Pages project site; '/' everywhere else.
     base: env.VITE_BASE || '/',
-    plugins: [react(), siteMeta(siteUrl)],
+    plugins: [react(), siteMeta(siteUrl, env.VITE_TRAILING_SLASH === 'true')],
     server: { proxy },
     preview: { proxy },
     test: {

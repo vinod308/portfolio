@@ -29,7 +29,9 @@ export function usePageMeta({ title, description } = {}) {
       const base = import.meta.env.BASE_URL
       const { pathname } = window.location
       const path = pathname.startsWith(base) ? pathname.slice(base.length - 1) : pathname
-      const url = `${SITE_URL}${path}`
+      // Static hosts that serve folders (GitHub Pages) canonicalise to a trailing slash.
+      const slash = import.meta.env.VITE_TRAILING_SLASH === 'true' && !path.endsWith('/') ? '/' : ''
+      const url = `${SITE_URL}${path}${slash}`
       setMeta('meta[property="og:url"]', 'property', 'og:url', url)
       let link = document.head.querySelector('link[rel="canonical"]')
       if (!link) {
