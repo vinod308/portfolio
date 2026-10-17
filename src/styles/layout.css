@@ -4,6 +4,13 @@
   padding-block: var(--section-space);
 }
 
+.section--light {
+  /* White section on the dark page; .theme-light supplies the dark text tokens. */
+  --color-bg: #ffffff;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
 .section--tight {
   padding-block: calc(var(--section-space) * 0.7);
 }

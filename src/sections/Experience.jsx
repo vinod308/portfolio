@@ -23,7 +23,7 @@ export default function Experience() {
   })
 
   return (
-    <section className="section experience" id="experience" ref={ref} aria-labelledby="experience-title">
+    <section className="section section--light theme-light experience" id="experience" ref={ref} aria-labelledby="experience-title">
       <Container>
         <div className="section__head">
           <SectionHeading

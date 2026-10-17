@@ -14,7 +14,7 @@ export default function Capabilities() {
   })
 
   return (
-    <section className="section about" id="skills" ref={ref} aria-labelledby="skills-title">
+    <section className="section section--light theme-light about" id="skills" ref={ref} aria-labelledby="skills-title">
       <Container className="about__grid">
         <div className="about__intro">
           <SectionHeading
