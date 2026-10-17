@@ -312,3 +312,17 @@ describe('notification email layout', () => {
     expect(html).not.toContain('wa.me')
   })
 })
+
+describe('notification email colours', () => {
+  it('is white with black text and lists first and last name separately', async () => {
+    const { app, transport } = makeApp()
+    await post(app, validBody)
+    const { html, text } = transport.sendMail.mock.calls[0][0]
+    expect(html).not.toMatch(/#2f5be0|#0b1220|#16253c/i) // no blue or navy
+    expect(html).toContain('box-shadow')
+    expect(text).toContain('First name: Asha')
+    expect(text).toContain('Last name:  Recruiter')
+    expect(html).toMatch(/First name<\/td>\s*<td[^>]*>Asha</)
+    expect(html).toMatch(/Last name<\/td>\s*<td[^>]*>Recruiter</)
+  })
+})
