@@ -112,8 +112,8 @@
 
 .hero__profiles {
   display: flex;
-  gap: var(--space-5);
-  margin-top: var(--space-4);
+  gap: var(--space-6);
+  margin-top: var(--space-5);
   font-size: var(--text-sm);
 }
 
