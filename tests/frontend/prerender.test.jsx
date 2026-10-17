@@ -85,7 +85,7 @@ describe('llms.txt', () => {
   it('includes case study content but leaves out the unconfirmed decisions', () => {
     const full = server.llmsFullTxt()
     expect(full).toContain('Built the integrations with 4 AI providers.')
-    expect(full).toContain('Garage Productions Pvt Ltd')
+    expect(full).toContain('Garage Collective Pvt Ltd')
     expect(full).toContain('**Workflow: How the modules I owned relate.**')
     // A "decisions" entry marked CONFIRM in projects.js
     expect(full).not.toContain('One pipeline for every provider')
