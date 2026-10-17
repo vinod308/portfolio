@@ -7,7 +7,7 @@ import { site } from '../data/site.js'
 import { useMotion, gsap, drawStroke } from '../lib/motion.js'
 import './Hero.css'
 
-const TITLE_LINES = ['I build digital products', 'and AI-powered apps', 'that hold up in production.']
+const TITLE_LINES = ['I build full stack software,', 'from the first line of code', 'to running in production.']
 
 const META = [
   { label: 'Full Stack', detail: 'React · Node.js · PostgreSQL' },
@@ -23,7 +23,7 @@ export default function Hero() {
     tl.from(q('.hero__eyebrow'), { autoAlpha: 0, x: -12, duration: 0.6 }, 0.6)
       .from(q('.hero__line-inner'), { yPercent: 110, duration: 1, stagger: 0.1, ease: 'power4.out' }, 0.75)
       .from(q('.hero__lede'), { autoAlpha: 0, y: 16, duration: 0.7 }, '-=0.6')
-      .from(q('.hero__actions > *'), { autoAlpha: 0, y: 14, duration: 0.6, stagger: 0.08 }, '-=0.45')
+      .from(q('.hero__actions > *, .hero__profiles'), { autoAlpha: 0, y: 14, duration: 0.6, stagger: 0.08 }, '-=0.45')
       .from(q('.hero__meta li'), { autoAlpha: 0, y: 10, duration: 0.5, stagger: 0.08 }, '-=0.4')
 
     // Visual: panel, then nodes in request order, then the connecting edges.
@@ -82,20 +82,26 @@ export default function Hero() {
             ))}
           </h1>
           <p className="hero__lede">
-            Full stack developer with nearly 7 years of experience shipping React, Node.js and PostgreSQL
-            applications, and integrating AI into them with the backend firmly in control.
+            Full stack developer with nearly 7 years of experience. I own application modules end to end, from React
+            interfaces and Express.js APIs to PostgreSQL schemas, deployment and production support, and integrate AI
+            with the backend firmly in control.
           </p>
           <div className="hero__actions">
             <Button to="/#projects" size="lg" icon={<ArrowIcon />}>
-              View Projects
+              Explore My Work
             </Button>
-            <Button to="/contact" variant="secondary" size="lg">
-              Contact Me
-            </Button>
-            <Button href={site.resume} variant="ghost" size="lg" className="hero__resume">
-              Résumé (PDF)
+            <Button href={site.resume} variant="secondary" size="lg" download>
+              Download Résumé
             </Button>
           </div>
+          <p className="hero__profiles">
+            {site.socials.map((s) => (
+              <a key={s.href} className="text-link text-link--muted" href={s.href} target="_blank" rel="noopener noreferrer">
+                {s.label}
+                <span className="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            ))}
+          </p>
           <ul className="hero__meta" role="list">
             {META.map((m) => (
               <li key={m.label}>

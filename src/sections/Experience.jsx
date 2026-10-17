@@ -29,7 +29,7 @@ export default function Experience() {
           <SectionHeading
             id="experience-title"
             eyebrow="Experience"
-            title="Nearly 7 years of shipping and running web applications"
+            title="Nearly 7 years of building and running production web applications"
           />
         </div>
 

@@ -31,9 +31,9 @@ export default function FeaturedProjects() {
         <div className="section__head">
           <SectionHeading
             id="projects-title"
-            eyebrow="Featured projects"
-            title="SaaS products I've helped build"
-            description="Three products across finance, AI search visibility and team operations, built with React, Node.js, Express.js and PostgreSQL."
+            eyebrow="Selected projects"
+            title="Production SaaS I've helped build"
+            description="Three products in finance, AI search visibility and team operations: what each one solves, what I owned and how it is built."
           />
         </div>
 
@@ -42,10 +42,16 @@ export default function FeaturedProjects() {
             <li className={`project ${i % 2 ? 'project--flip' : ''}`} key={p.slug}>
               <div className="project__copy">
                 <p className="project__index mono-label">
-                  {String(i + 1).padStart(2, '0')} · {p.category}
+                  {String(i + 1).padStart(2, '0')} · {p.kind}
                 </p>
                 <h3 className="project__name">{p.name}</h3>
                 <p className="project__summary">{p.summary}</p>
+                {p.caseStudy && (
+                  <div className="project__role">
+                    <p className="project__role-label">The problem</p>
+                    <p>{p.caseStudy.context}</p>
+                  </div>
+                )}
                 <div className="project__role">
                   <p className="project__role-label">My role</p>
                   <p>{p.role}</p>

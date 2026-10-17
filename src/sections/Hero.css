@@ -96,10 +96,11 @@
   margin-top: var(--space-6);
 }
 
-.hero__resume .button__label {
-  text-decoration: underline;
-  text-decoration-color: var(--color-border-strong);
-  text-underline-offset: 0.3em;
+.hero__profiles {
+  display: flex;
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
 }
 
 .hero__meta {

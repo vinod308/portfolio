@@ -1,0 +1,32 @@
+.about-brief {
+  border-top: 1px solid var(--color-border);
+}
+
+.about-brief__grid {
+  display: grid;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.about-brief__grid .portrait {
+  max-width: 22rem;
+}
+
+.about-brief__text {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.about-brief__text > p {
+  max-width: 38rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}
+
+@media (min-width: 64rem) {
+  .about-brief__grid {
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(3rem, 1rem + 5vw, 6rem);
+  }
+}

@@ -37,7 +37,7 @@ describe('prerendered pages', () => {
   it('separates the hero heading lines with spaces', async () => {
     const home = await server.renderRoute('/')
     const h1 = home.match(/<h1[^>]*>(.*?)<\/h1>/s)[1].replace(/<[^>]+>/g, '')
-    expect(h1).toBe('I build digital products and AI-powered apps that hold up in production.')
+    expect(h1).toBe('I build full stack software, from the first line of code to running in production.')
   })
 
   it('renders real page content, not an empty shell', async () => {

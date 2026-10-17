@@ -30,10 +30,11 @@ export default function ContactCTA() {
           <div className="cta__inner">
             <p className="mono-label">Contact</p>
             <h2 className="cta__title" id="cta-title">
-              Have a product to build or an AI feature to ship?
+              Have an interesting engineering challenge?
             </h2>
             <p className="cta__text">
-              I&apos;m happy to talk about full stack engineering, product development or AI integration work.
+              I&apos;m open to full stack engineering roles, and happy to talk about product development or AI
+              integration work.
             </p>
             <div className="cta__actions">
               <Button to="/contact" size="lg" icon={<ArrowIcon />}>
@@ -43,6 +44,21 @@ export default function ContactCTA() {
                 {site.email}
               </a>
             </div>
+            <ul className="cta__links" role="list" aria-label="Elsewhere">
+              {site.socials.map((s) => (
+                <li key={s.href}>
+                  <a className="text-link text-link--muted" href={s.href} target="_blank" rel="noopener noreferrer">
+                    {s.label}
+                    <span className="visually-hidden"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a className="text-link text-link--muted" href={site.resume} download>
+                  Résumé (PDF)
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </Container>

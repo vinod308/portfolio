@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { NavLink, useLocation } from 'react-router'
+import { Link, NavLink, useLocation } from 'react-router'
 import Container from './Container.jsx'
 import Logo from './Logo.jsx'
 import Button from './Button.jsx'
@@ -73,9 +73,24 @@ export default function Navbar({ links = [], cta }) {
           <ul className="navbar__links" id={menuId} role="list">
             {links.map((link) => (
               <li key={link.to}>
-                <NavLink className="navbar__link" to={link.to} end={link.to === '/'}>
-                  {link.label}
-                </NavLink>
+                {link.to.includes('#') ? (
+                  // NavLink ignores the hash, so section links get their own active state.
+                  <Link
+                    className={`navbar__link ${location.pathname === '/' && location.hash === link.to.slice(1) ? 'active' : ''}`}
+                    to={link.to}
+                    aria-current={location.pathname === '/' && location.hash === link.to.slice(1) ? 'location' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <NavLink
+                    className={({ isActive }) => `navbar__link ${isActive && !(link.to === '/' && location.hash) ? 'active' : ''}`}
+                    to={link.to}
+                    end={link.to === '/'}
+                  >
+                    {link.label}
+                  </NavLink>
+                )}
               </li>
             ))}
             {cta && (
