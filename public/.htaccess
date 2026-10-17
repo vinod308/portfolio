@@ -8,6 +8,15 @@ AddDefaultCharset UTF-8
 AddType "text/plain; charset=utf-8" .txt
 AddType "application/xml; charset=utf-8" .xml
 
+# Keep /admin out of search engines and AI crawlers (the page also has a
+# noindex meta tag).
+<IfModule mod_setenvif.c>
+  <IfModule mod_headers.c>
+    SetEnvIf Request_URI "^/admin" ADMIN_PAGE
+    Header set X-Robots-Tag "noindex, nofollow" env=ADMIN_PAGE
+  </IfModule>
+</IfModule>
+
 # One canonical host: www.vinod-kumar.in -> vinod-kumar.in
 <IfModule mod_rewrite.c>
   RewriteEngine On

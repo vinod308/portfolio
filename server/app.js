@@ -7,6 +7,7 @@ import cors from 'cors'
 import { rateLimit } from 'express-rate-limit'
 import { normalizeContact, validateContact, MIN_FILL_MS } from '../shared/contact.js'
 import { buildMessage } from './mailer.js'
+import { adminRouter, createGoogleVerifier } from './admin.js'
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist')
 const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'message', 'website']
@@ -31,7 +32,13 @@ const emailDomain = (email) => email.split('@')[1]?.toLowerCase()
  * Build the Express app. `transport` needs a sendMail(message) method;
  * tests pass a mock so no real email is ever sent.
  */
-export function createApp({ config, transport, logger = consoleLogger, now = () => new Date() }) {
+export function createApp({
+  config,
+  transport,
+  logger = consoleLogger,
+  now = () => new Date(),
+  verifyIdToken = createGoogleVerifier(),
+}) {
   const app = express()
   app.disable('x-powered-by')
   app.set('trust proxy', config.trustProxy)
@@ -64,8 +71,8 @@ export function createApp({ config, transport, logger = consoleLogger, now = () 
   api.use(
     cors({
       origin: config.clientOrigins,
-      methods: ['POST'],
-      allowedHeaders: ['Content-Type', 'Accept'],
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
       maxAge: 600,
     }),
   )
@@ -132,6 +139,16 @@ export function createApp({ config, transport, logger = consoleLogger, now = () 
       return res.status(502).json({ ok: false, message: GENERIC_FAILURE })
     }
   })
+
+  // Admin: Google sign-in, allow-listed accounts only (server/admin.js).
+  const adminLimiter = rateLimit({
+    windowMs: 15 * 60_000,
+    limit: 120,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    handler: (req, res) => res.status(429).json({ ok: false, message: 'Too many requests. Please wait a few minutes.' }),
+  })
+  api.use('/admin', adminLimiter, adminRouter({ verifyIdToken, logger }))
 
   api.use((req, res) => res.status(404).json({ ok: false, message: 'Not found.' }))
   app.use('/api', api)

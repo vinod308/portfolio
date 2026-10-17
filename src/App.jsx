@@ -9,6 +9,8 @@ const ProjectDetail = lazy(() => import('./pages/ProjectDetail.jsx'))
 const About = lazy(() => import('./pages/About.jsx'))
 const Contact = lazy(() => import('./pages/Contact.jsx'))
 const NotFound = lazy(() => import('./pages/NotFound.jsx'))
+// Admin is its own chunk: visitors never download it.
+const Admin = lazy(() => import('./pages/Admin.jsx'))
 
 // Phase 2 linked case studies at /work/:slug; keep those links working.
 function LegacyWorkRedirect() {
@@ -24,6 +26,7 @@ const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '')
 export function AppRoutes() {
   return (
     <Routes>
+      <Route path="admin" element={page(<Admin />)} />
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="projects" element={page(<Projects />)} />

@@ -51,6 +51,11 @@ for (const { path: route, meta } of ROUTES) {
 write(path.join(outDir, '404.html'), page(headTags('/404', PAGE_META.notFound, { noindex: true })))
 console.log('wrote 404.html')
 
+// /admin: an empty, noindex shell (answers 200 on static hosts). The page
+// itself renders client-side after Google sign-in; it is not in the sitemap.
+write(path.join(outDir, 'admin', 'index.html'), page(headTags('/admin', { title: 'Admin' }, { noindex: true })))
+console.log('wrote admin/index.html')
+
 // Markdown versions for AI assistants; their links need absolute URLs.
 if (SITE_URL) {
   write(path.join(outDir, 'llms.txt'), llmsTxt())

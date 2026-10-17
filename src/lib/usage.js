@@ -115,7 +115,8 @@ export function track(name, params = {}) {
 
 /** Call once on startup: restores a previous "granted" and tracks email clicks. */
 export function initAnalytics() {
-  if (!analyticsEnabled()) return
+  // The owner's own admin visits are never tracked.
+  if (!analyticsEnabled() || window.location.pathname.startsWith('/admin')) return
   state = { ...state, consent: readConsent() }
   emit()
   if (state.consent === 'granted') loadGtag()

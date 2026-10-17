@@ -131,3 +131,21 @@ describe('structured data', () => {
     expect(jsonLd(head)['@context']).toBe('https://schema.org')
   })
 })
+
+describe('admin page', () => {
+  it('is not a public route: not prerendered, not in the sitemap list', () => {
+    expect(server.ROUTES.map((r) => r.path)).not.toContain('/admin')
+  })
+
+  it('gets a noindex shell with no canonical or JSON-LD', () => {
+    const head = server.headTags('/admin', { title: 'Admin' }, { noindex: true })
+    expect(head).toContain('<meta name="robots" content="noindex" />')
+    expect(head).not.toContain('canonical')
+    expect(head).not.toContain('ld+json')
+  })
+
+  it('stays out of llms.txt', () => {
+    expect(server.llmsTxt()).not.toContain('/admin')
+    expect(server.llmsFullTxt()).not.toContain('/admin')
+  })
+})
