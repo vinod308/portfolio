@@ -1,0 +1,43 @@
+# Tell Bing (and the other IndexNow engines: Yandex, Seznam, Naver) that the
+# site's pages changed, after Hostinger has deployed a push to main.
+# Hostinger builds from the same push; it finishes in well under a minute.
+# The key is public by design: it must be served at https://vinod-kumar.in/<key>.txt
+# (public/b0e27c60ae6502c4b1a35bc48b164dec.txt).
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'public/**', 'index.html', 'scripts/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+
+env:
+  SITE: https://vinod-kumar.in
+  KEY: b0e27c60ae6502c4b1a35bc48b164dec
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for the Hostinger deploy
+        run: sleep 120
+
+      - name: Check the key file is live
+        run: curl -fsS "$SITE/$KEY.txt" | grep -qx "$KEY"
+
+      - name: Submit every sitemap URL
+        run: |
+          urls=$(curl -fsS "$SITE/sitemap.xml" | grep -o '<loc>[^<]*' | cut -c6- | jq -R . | jq -s .)
+          echo "Submitting: $urls"
+          jq -n --arg host "${SITE#https://}" --arg key "$KEY" --arg loc "$SITE/$KEY.txt" --argjson urlList "$urls" \
+            '{host: $host, key: $key, keyLocation: $loc, urlList: $urlList}' |
+            curl -fsS -X POST https://api.indexnow.org/indexnow \
+              -H 'Content-Type: application/json; charset=utf-8' --data-binary @- \
+              -o /dev/null -w 'IndexNow responded %{http_code}\n'

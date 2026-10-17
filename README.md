@@ -215,6 +215,12 @@ names the major AI crawlers explicitly as allowed. `public/.htaccess` is for
 Hostinger: it serves `404.html` for unknown URLs and redirects `www` to the
 bare domain.
 
+After a push that changes the site, `.github/workflows/indexnow.yml` waits for
+the Hostinger deploy and submits every sitemap URL to IndexNow (Bing, Yandex,
+Seznam, Naver). Its key file is `public/b0e27c60ae6502c4b1a35bc48b164dec.txt`;
+keep it, and `public/googledad8033451add468.html` (Google Search Console
+verification), in place.
+
 ## Troubleshooting email delivery
 
 | Symptom | Likely cause / fix |
