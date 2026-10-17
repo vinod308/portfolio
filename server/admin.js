@@ -14,6 +14,7 @@ import { createRemoteJWKSet, jwtVerify } from 'jose'
 import { GOOGLE_CLIENT_ID, isAdminEmail } from '../shared/admin.js'
 import { SESSION_HOURS, SET_PASSWORD_MINUTES, hashPassword, verifyPassword } from './adminStore.js'
 import { buildPasswordEmail } from './mailer.js'
+import { RANGES } from './analytics.js'
 
 const GOOGLE_ISSUERS = ['https://accounts.google.com', 'accounts.google.com']
 const GOOGLE_JWKS = 'https://www.googleapis.com/oauth2/v3/certs'
@@ -59,7 +60,7 @@ const limiter = (minutes, limit, message) =>
     handler: (req, res) => res.status(429).json({ ok: false, message }),
   })
 
-export function adminRouter({ store, verifyIdToken, transport, config, logger }) {
+export function adminRouter({ store, analytics, verifyIdToken, transport, config, logger }) {
   const router = express.Router()
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store')
@@ -145,6 +146,18 @@ export function adminRouter({ store, verifyIdToken, transport, config, logger })
   })
 
   router.get('/me', (req, res) => res.json({ ok: true, user: req.admin }))
+
+  // Site analytics for the dashboard (server/analytics.js).
+  router.get('/stats', async (req, res) => {
+    const days = RANGES[req.query.range] ?? RANGES['7d']
+    if (!analytics) return res.status(503).json({ ok: false, message: 'Analytics is not configured yet.' })
+    try {
+      res.json({ ok: true, days, ...(await analytics.stats(days)) })
+    } catch (err) {
+      logger.error({ event: 'stats_failed', code: err?.code })
+      res.status(502).json({ ok: false, message: 'Could not load analytics right now.' })
+    }
+  })
 
   router.post('/logout', async (req, res) => {
     await store.deleteToken(req.sessionToken)

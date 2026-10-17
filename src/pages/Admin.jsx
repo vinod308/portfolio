@@ -4,6 +4,7 @@ import { LogoMark } from '../components/Logo.jsx'
 import { site } from '../data/site.js'
 import { GOOGLE_CLIENT_ID } from '../../shared/admin.js'
 import { ADMIN_API, adminFetch, session } from '../lib/adminApi.js'
+import { markOwner } from '../lib/pulse.js'
 import './Admin.css'
 
 /**
@@ -35,6 +36,7 @@ function AdminHome() {
 
   const signedIn = useCallback((token, me) => {
     session.set(token)
+    markOwner()
     setUser(me)
     setState('signed-in')
   }, [])

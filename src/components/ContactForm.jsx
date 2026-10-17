@@ -3,6 +3,7 @@ import Button, { ArrowIcon } from './Button.jsx'
 import { LIMITS, validateContact, submitContact, ContactError } from '../lib/contact.js'
 import { site } from '../data/site.js'
 import { track } from '../lib/usage.js'
+import { pulseEvent } from '../lib/pulse.js'
 import './ContactForm.css'
 
 const EMPTY = { firstName: '', lastName: '', email: '', phone: '', message: '', website: '' }
@@ -63,6 +64,7 @@ export default function ContactForm() {
       })
       setStatus('success')
       track('generate_lead', { method: 'contact_form' })
+      pulseEvent('contact_submit')
     } catch (err) {
       const e2 = err instanceof ContactError ? err : new ContactError('server', 'The message could not be sent.')
       setServerErrors(e2.fieldErrors)

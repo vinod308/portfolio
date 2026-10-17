@@ -9,6 +9,7 @@ import { normalizeContact, validateContact, MIN_FILL_MS } from '../shared/contac
 import { buildMessage } from './mailer.js'
 import { adminRouter, createGoogleVerifier } from './admin.js'
 import { createNeonStore } from './adminStore.js'
+import { createAnalyticsStore, pulseRouter } from './analytics.js'
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist')
 const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'message', 'website']
@@ -40,6 +41,7 @@ export function createApp({
   now = () => new Date(),
   verifyIdToken = createGoogleVerifier(),
   adminStore = config.databaseUrl ? createNeonStore(config.databaseUrl) : null,
+  analyticsStore = config.databaseUrl ? createAnalyticsStore(config.databaseUrl) : null,
 }) {
   const app = express()
   app.disable('x-powered-by')
@@ -150,7 +152,12 @@ export function createApp({
     legacyHeaders: false,
     handler: (req, res) => res.status(429).json({ ok: false, message: 'Too many requests. Please wait a few minutes.' }),
   })
-  api.use('/admin', adminLimiter, adminRouter({ store: adminStore, verifyIdToken, transport, config, logger }))
+  api.use('/pulse', pulseRouter({ store: analyticsStore, config, logger }))
+  api.use(
+    '/admin',
+    adminLimiter,
+    adminRouter({ store: adminStore, analytics: analyticsStore, verifyIdToken, transport, config, logger }),
+  )
 
   api.use((req, res) => res.status(404).json({ ok: false, message: 'Not found.' }))
   app.use('/api', api)

@@ -7,6 +7,7 @@ import './styles/base.css'
 import './styles/layout.css'
 import App from './App.jsx'
 import { initAnalytics } from './lib/usage.js'
+import { initPulse } from './lib/pulse.js'
 
 const app = (
   <StrictMode>
@@ -27,3 +28,4 @@ if (root.dataset.route === path) {
 }
 
 initAnalytics()
+initPulse()

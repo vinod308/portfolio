@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import Navbar from './Navbar.jsx'
 import Footer from './Footer.jsx'
@@ -6,6 +6,7 @@ import ConsentBanner from './ConsentBanner.jsx'
 import { site } from '../data/site.js'
 import { navLinks } from '../data/content.js'
 import { prefersReducedMotion, ScrollTrigger } from '../lib/motion.js'
+import { pulsePageView } from '../lib/pulse.js'
 
 /**
  * Shared shell. Handles scroll position on navigation: hash links scroll to
@@ -16,6 +17,10 @@ export default function Layout() {
   const { pathname, hash, search, key } = useLocation()
   const mainRef = useRef(null)
   const last = useRef({ pathname, hash, search })
+
+  useEffect(() => {
+    pulsePageView(pathname)
+  }, [pathname])
 
   useLayoutEffect(() => {
     const prev = last.current
