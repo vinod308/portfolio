@@ -5,6 +5,7 @@ import { site } from '../data/site.js'
 import { GOOGLE_CLIENT_ID } from '../../shared/admin.js'
 import { ADMIN_API, adminFetch, session } from '../lib/adminApi.js'
 import { markOwner } from '../lib/pulse.js'
+import AdminAnalytics from './AdminAnalytics.jsx'
 import './Admin.css'
 
 /**
@@ -328,10 +329,7 @@ function Dashboard({ user, onSignOut }) {
             {greeting(now)}, {first}
           </h2>
           <p className="adm-sub">Portfolio admin · vinod-kumar.in</p>
-          <section className="adm-panel">
-            <h3>Nothing here yet</h3>
-            <p>Inquiries and project editing will appear here once they&apos;re added.</p>
-          </section>
+          <AdminAnalytics />
         </main>
       </div>
     </div>
