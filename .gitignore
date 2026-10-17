@@ -39,3 +39,8 @@ final-cv.pdf
 .env*
 !.env.example
 !server/.env.example
+
+# AI agent skills installed by integrations (local tooling, not site code)
+.agents/
+.claude/skills/
+skills-lock.json
