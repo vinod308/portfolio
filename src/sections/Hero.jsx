@@ -1,7 +1,9 @@
 import { Fragment, useRef } from 'react'
 import Container from '../components/Container.jsx'
 import Button, { ArrowIcon } from '../components/Button.jsx'
-import { LogoMark } from '../components/Logo.jsx'
+import avif400 from '../assets/portrait/vinod-400.avif'
+import webp400 from '../assets/portrait/vinod-400.webp'
+import jpg640 from '../assets/portrait/vinod-640.jpg'
 import HeroVisual from './HeroVisual.jsx'
 import { site } from '../data/site.js'
 import { useMotion, gsap, drawStroke } from '../lib/motion.js'
@@ -65,7 +67,11 @@ export default function Hero() {
       <Container className="hero__grid">
         <div className="hero__copy">
           <div className="hero__brand">
-            <LogoMark size={64} motion="signal" className="hero__mark" />
+            <picture className="hero__avatar">
+              <source type="image/avif" srcSet={avif400} />
+              <source type="image/webp" srcSet={webp400} />
+              <img src={jpg640} alt={`${site.name}, full stack developer`} width="80" height="80" fetchPriority="high" />
+            </picture>
             <p className="mono-label hero__eyebrow">
               {site.name} · {site.title}
             </p>
