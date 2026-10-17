@@ -4,7 +4,9 @@
 ErrorDocument 404 /404.html
 
 # llms.txt, llms-full.txt and sitemap.xml contain non-ASCII text (é, →).
-AddCharset UTF-8 .txt .xml
+AddDefaultCharset UTF-8
+AddType "text/plain; charset=utf-8" .txt
+AddType "application/xml; charset=utf-8" .xml
 
 # One canonical host: www.vinod-kumar.in -> vinod-kumar.in
 <IfModule mod_rewrite.c>
