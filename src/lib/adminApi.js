@@ -6,11 +6,11 @@ import { CONTACT_ENDPOINT } from './contact.js'
 
 export const ADMIN_API = CONTACT_ENDPOINT === 'none' ? null : CONTACT_ENDPOINT.replace(/\/api\/contact$/, '/api/admin')
 
-const TOKEN_KEY = 'admin-id-token'
+const TOKEN_KEY = 'admin-session'
 
-// sessionStorage: the token disappears when the tab closes. Google ID tokens
-// also expire after an hour; the server rejects them after that.
-export const tokenStore = {
+// sessionStorage: the session ends when the tab closes; the server also
+// expires it after 12 hours.
+export const session = {
   get() {
     try {
       return window.sessionStorage.getItem(TOKEN_KEY)
@@ -22,7 +22,7 @@ export const tokenStore = {
     try {
       window.sessionStorage.setItem(TOKEN_KEY, token)
     } catch {
-      // Private mode without storage: stay signed in for this page view only.
+      // Private mode without storage: signed in for this page view only.
     }
   },
   clear() {
@@ -41,17 +41,23 @@ export class AdminError extends Error {
   }
 }
 
-/** GET an admin endpoint with the Google ID token; throws AdminError on failure. */
-export async function adminGet(path, token) {
+/** Call an admin endpoint; resolves with the JSON body or throws AdminError. */
+export async function adminFetch(path, { method = 'GET', body, token = session.get() } = {}) {
   let res
   try {
     res = await fetch(`${ADMIN_API}${path}`, {
-      headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+      method,
+      headers: {
+        Accept: 'application/json',
+        ...(body && { 'Content-Type': 'application/json' }),
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: body && JSON.stringify(body),
     })
   } catch {
     throw new AdminError(0, 'Could not reach the server. Check your connection and try again.')
   }
-  const body = await res.json().catch(() => null)
-  if (res.ok && body?.ok) return body
-  throw new AdminError(res.status, body?.message || 'Something went wrong. Please try again.')
+  const data = await res.json().catch(() => null)
+  if (res.ok && data?.ok) return data
+  throw new AdminError(res.status, data?.message || 'Something went wrong. Please try again.')
 }

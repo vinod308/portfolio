@@ -195,3 +195,34 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
     html,
   }
 }
+
+/** The one-time "set your admin password" email (server/admin.js). */
+export function buildPasswordEmail({ to, url, config, minutes }) {
+  const site = new URL(config.clientOrigins[0]).host
+  const text = [
+    `Set your admin password for ${site}`,
+    '',
+    `Open this link to choose a password. It works once and expires in ${minutes} minutes:`,
+    url,
+    '',
+    "If you didn't ask for this, ignore this email; nothing changes.",
+  ].join('\n')
+
+  const html = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Set your admin password</title></head>
+<body style="margin:0;padding:0;background:${C.white}">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.white}"><tr><td align="center" style="padding:32px 12px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;border:1px solid ${C.line};border-radius:14px;background:${C.white};box-shadow:${C.shadow}">
+  <tr><td style="padding:28px">
+    <div style="width:40px;height:40px;line-height:40px;border-radius:10px;border:1.5px solid ${C.text};text-align:center;color:${C.text};font:700 15px ${FONT}">VK</div>
+    <div style="color:${C.text};font:700 22px ${FONT};padding:20px 0 8px">Set your admin password</div>
+    <div style="color:${C.muted};font:15px/1.6 ${FONT};padding-bottom:22px">Choose a password for ${link(config.clientOrigins[0], site)} admin. This link works once and expires in ${minutes} minutes.</div>
+    ${button(url, 'Set password')}
+    <div style="color:${C.muted};font:12px/1.6 ${FONT};padding-top:18px">If you didn't ask for this, ignore this email; nothing changes.</div>
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>`
+
+  return { from: config.mailFrom, to, subject: `Set your admin password · ${site}`, text, html }
+}

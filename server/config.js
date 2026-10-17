@@ -102,5 +102,7 @@ export function readConfig(env = process.env) {
     rateLimit: { windowMs: rateWindowMin * 60_000, max: rateMax },
     serveStatic,
     verifyOnStart,
+    // Neon Postgres for admin sign-in (optional; admin answers 503 without it).
+    databaseUrl: get('DATABASE_URL') || null,
   }
 }

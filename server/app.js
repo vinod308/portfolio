@@ -8,6 +8,7 @@ import { rateLimit } from 'express-rate-limit'
 import { normalizeContact, validateContact, MIN_FILL_MS } from '../shared/contact.js'
 import { buildMessage } from './mailer.js'
 import { adminRouter, createGoogleVerifier } from './admin.js'
+import { createNeonStore } from './adminStore.js'
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist')
 const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'message', 'website']
@@ -38,6 +39,7 @@ export function createApp({
   logger = consoleLogger,
   now = () => new Date(),
   verifyIdToken = createGoogleVerifier(),
+  adminStore = config.databaseUrl ? createNeonStore(config.databaseUrl) : null,
 }) {
   const app = express()
   app.disable('x-powered-by')
@@ -140,7 +142,7 @@ export function createApp({
     }
   })
 
-  // Admin: Google sign-in, allow-listed accounts only (server/admin.js).
+  // Admin: password or Google sign-in, allow-listed accounts only (server/admin.js).
   const adminLimiter = rateLimit({
     windowMs: 15 * 60_000,
     limit: 120,
@@ -148,7 +150,7 @@ export function createApp({
     legacyHeaders: false,
     handler: (req, res) => res.status(429).json({ ok: false, message: 'Too many requests. Please wait a few minutes.' }),
   })
-  api.use('/admin', adminLimiter, adminRouter({ verifyIdToken, logger }))
+  api.use('/admin', adminLimiter, adminRouter({ store: adminStore, verifyIdToken, transport, config, logger }))
 
   api.use((req, res) => res.status(404).json({ ok: false, message: 'Not found.' }))
   app.use('/api', api)

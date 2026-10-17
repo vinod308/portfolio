@@ -41,8 +41,8 @@ export function memoryLogger() {
   return { lines, info: push('info'), warn: push('warn'), error: push('error') }
 }
 
-export function makeApp({ env = {}, transport = mockTransport(), logger = memoryLogger(), verifyIdToken } = {}) {
+export function makeApp({ env = {}, transport = mockTransport(), logger = memoryLogger(), verifyIdToken, adminStore } = {}) {
   const config = readConfig({ ...baseEnv, ...env })
-  const deps = { config, transport, logger, ...(verifyIdToken && { verifyIdToken }) }
+  const deps = { config, transport, logger, ...(verifyIdToken && { verifyIdToken }), ...(adminStore && { adminStore }) }
   return { app: createApp(deps), transport, logger, config }
 }

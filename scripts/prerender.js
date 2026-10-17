@@ -53,8 +53,10 @@ console.log('wrote 404.html')
 
 // /admin: an empty, noindex shell (answers 200 on static hosts). The page
 // itself renders client-side after Google sign-in; it is not in the sitemap.
-write(path.join(outDir, 'admin', 'index.html'), page(headTags('/admin', { title: 'Admin' }, { noindex: true })))
-console.log('wrote admin/index.html')
+for (const dir of ['admin', 'admin/set-password']) {
+  write(path.join(outDir, dir, 'index.html'), page(headTags(`/${dir}`, { title: 'Admin' }, { noindex: true })))
+}
+console.log('wrote admin shells')
 
 // Markdown versions for AI assistants; their links need absolute URLs.
 if (SITE_URL) {

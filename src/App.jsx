@@ -26,7 +26,7 @@ const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '')
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="admin" element={page(<Admin />)} />
+      <Route path="admin/*" element={page(<Admin />)} />
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="projects" element={page(<Projects />)} />
