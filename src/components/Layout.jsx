@@ -24,14 +24,18 @@ export default function Layout() {
     // Query-only updates (e.g. project filters) keep the scroll position.
     if (!pageChanged && prev.hash === hash && prev.search !== search) return
 
+    // 'instant', not 'auto': 'auto' follows the CSS scroll-behavior: smooth,
+    // so the page was still near its old position when ScrollTrigger.refresh()
+    // below recorded and restored it, and new pages opened scrolled down.
+    const jump = pageChanged || prefersReducedMotion() ? 'instant' : 'smooth'
     if (hash) {
       const target = document.getElementById(decodeURIComponent(hash.slice(1)))
       if (target) {
-        target.scrollIntoView({ behavior: prefersReducedMotion() || pageChanged ? 'auto' : 'smooth' })
+        target.scrollIntoView({ behavior: jump })
         return
       }
     }
-    window.scrollTo({ top: 0, behavior: pageChanged || prefersReducedMotion() ? 'auto' : 'smooth' })
+    window.scrollTo({ top: 0, behavior: jump })
     if (pageChanged) {
       mainRef.current?.focus({ preventScroll: true })
       ScrollTrigger.refresh()
