@@ -1,4 +1,6 @@
 // Google Analytics 4, loaded only after the visitor accepts.
+// (Named usage.js, not analytics.js: ad blockers block files called analytics.js,
+// which would stop the whole app from loading in dev.)
 //
 // Until consent is "granted" nothing is requested from Google and no cookies
 // are set. GA4 enhanced measurement (on in the GA property) records page

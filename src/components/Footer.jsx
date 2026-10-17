@@ -5,7 +5,7 @@ import Logo from './Logo.jsx'
 import { site } from '../data/site.js'
 import { navLinks } from '../data/content.js'
 import { useMotion, reveal } from '../lib/motion.js'
-import { openConsentSettings, useConsent } from '../lib/analytics.js'
+import { openConsentSettings, useConsent } from '../lib/usage.js'
 import './Footer.css'
 
 export default function Footer() {

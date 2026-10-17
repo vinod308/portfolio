@@ -111,7 +111,7 @@ can still filter or junk it (see [Troubleshooting](#troubleshooting-email-delive
 POST /api/contact
 Content-Type: application/json
 
-{ "name": "…", "email": "…", "inquiry": "job|project|ai|other", "message": "…", "website": "", "elapsedMs": 12000 }
+{ "firstName": "…", "lastName": "…", "email": "…", "phone": "+91 98765 43210", "message": "…", "website": "", "elapsedMs": 12000 }
 ```
 
 | Response | Meaning |
@@ -126,8 +126,10 @@ Content-Type: application/json
 | `502 { ok: false }` | SMTP failed; generic message, the form offers a retry and the public email |
 
 Validation rules (`shared/contact.js`) are shared by the browser and the server:
-name 2–80 chars, valid email ≤ 254 chars, known inquiry type, message 20–2000
-chars with at most 5 links. Single-line fields lose line breaks; control
+first and last name required, 1–50 letters (any script; spaces, hyphens,
+apostrophes and dots allowed), valid email ≤ 254 chars, phone with an optional
+leading `+` and 7–15 digits (spaces, dots, dashes and brackets allowed),
+message 20–2000 chars with at most 5 links. Single-line fields lose line breaks; control
 characters are stripped.
 
 ### Security measures
@@ -138,8 +140,8 @@ characters are stripped.
   under 3 s). Both get a normal-looking success response and no email.
 - Origin check plus CORS restricted to `CLIENT_ORIGIN`; security headers via
   Helmet (CSP, HSTS, nosniff, frame and referrer policies); `x-powered-by` removed.
-- Generic error responses; logs record only event, inquiry type, email domain,
-  message length and SMTP error codes. Never credentials, names, addresses or message text.
+- Generic error responses; logs record only event, email domain,
+  message length and SMTP error codes. Never credentials, names, phone numbers, addresses or message text.
 - No endpoint exposes configuration. `GET /api/health` returns `{ "ok": true }` only.
 - `.env` files are git-ignored; only `*.env.example` placeholders are committed.
 

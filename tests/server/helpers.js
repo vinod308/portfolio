@@ -16,9 +16,10 @@ export const baseEnv = {
 }
 
 export const validBody = {
-  name: 'Asha Recruiter',
+  firstName: 'Asha',
+  lastName: 'Recruiter',
   email: 'asha@company.example',
-  inquiry: 'job',
+  phone: '+91 98765 43210',
   message: 'Hello Vinod, we have a full stack role and would like to talk with you about it.',
   website: '',
   elapsedMs: 12000,

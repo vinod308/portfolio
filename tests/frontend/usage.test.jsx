@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import ConsentBanner from '../../src/components/ConsentBanner.jsx'
-import { isAnalyticsEnabled, track } from '../../src/lib/analytics.js'
+import { isAnalyticsEnabled, track } from '../../src/lib/usage.js'
 
 const base = { prod: true, id: 'G-TEST123', primaryHost: 'vinod-kumar.in', hostname: 'vinod-kumar.in' }
 

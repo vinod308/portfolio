@@ -1,5 +1,5 @@
 import Button from './Button.jsx'
-import { setConsent, useConsent } from '../lib/analytics.js'
+import { setConsent, useConsent } from '../lib/usage.js'
 import './ConsentBanner.css'
 
 /**

@@ -8,9 +8,10 @@ const json = (status, body) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
 async function fillValid(user) {
-  await user.type(screen.getByLabelText(/^Name/), 'Asha Recruiter')
+  await user.type(screen.getByLabelText(/^First name/), 'Asha')
+  await user.type(screen.getByLabelText(/^Last name/), 'Recruiter')
   await user.type(screen.getByLabelText(/^Email/), 'asha@company.example')
-  await user.selectOptions(screen.getByLabelText(/What is it about/), 'job')
+  await user.type(screen.getByLabelText(/^Phone/), '+91 98765 43210')
   await user.type(screen.getByLabelText(/^Message/), 'We have a full stack role and would love to talk.')
 }
 
@@ -31,10 +32,12 @@ describe('ContactForm', () => {
     const user = userEvent.setup()
     render(<ContactForm />)
     await user.click(submit())
-    expect(screen.getByText('Please enter your name.')).toBeVisible()
+    expect(screen.getByText('Please enter your first name.')).toBeVisible()
+    expect(screen.getByText('Please enter your last name.')).toBeVisible()
     expect(screen.getByText('Please enter your email address.')).toBeVisible()
-    expect(screen.getByLabelText(/^Name/)).toHaveFocus()
-    expect(screen.getByLabelText(/^Name/)).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByText('Please enter your phone number.')).toBeVisible()
+    expect(screen.getByLabelText(/^First name/)).toHaveFocus()
+    expect(screen.getByLabelText(/^First name/)).toHaveAttribute('aria-invalid', 'true')
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
@@ -71,9 +74,10 @@ describe('ContactForm', () => {
     expect(init.headers['Content-Type']).toBe('application/json')
     const body = JSON.parse(init.body)
     expect(body).toMatchObject({
-      name: 'Asha Recruiter',
+      firstName: 'Asha',
+      lastName: 'Recruiter',
       email: 'asha@company.example',
-      inquiry: 'job',
+      phone: '+91 98765 43210',
       website: '',
     })
     expect(typeof body.elapsedMs).toBe('number')

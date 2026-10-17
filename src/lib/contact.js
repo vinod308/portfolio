@@ -1,7 +1,7 @@
 // Contact form API client. Validation rules are shared with the server in
 // shared/contact.js. The full request/response contract is in the README.
 
-export { LIMITS, INQUIRIES, validateContact } from '../../shared/contact.js'
+export { LIMITS, validateContact } from '../../shared/contact.js'
 
 export const CONTACT_ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
 // Static hosts without the API (e.g. GitHub Pages) build with
@@ -34,9 +34,10 @@ export async function submitContact(values, { signal, elapsedMs } = {}) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        name: values.name.trim(),
+        firstName: values.firstName.trim(),
+        lastName: values.lastName.trim(),
         email: values.email.trim(),
-        inquiry: values.inquiry,
+        phone: values.phone.trim(),
         message: values.message.trim(),
         website: values.website ?? '',
         ...(Number.isFinite(elapsedMs) && { elapsedMs: Math.round(elapsedMs) }),

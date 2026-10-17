@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import { inquiryLabel } from '../shared/contact.js'
+import { fullName } from '../shared/contact.js'
 
 const SUBJECT_PREFIX = '[Portfolio Inquiry]'
 
@@ -57,8 +57,8 @@ export function escapeHtml(value) {
  * Reply-To; From is always the configured, authenticated sender.
  */
 export function buildMessage(inquiry, config, receivedAt = new Date()) {
-  const name = headerSafe(inquiry.name)
-  const topic = inquiryLabel(inquiry.inquiry)
+  const name = headerSafe(fullName(inquiry))
+  const phone = headerSafe(inquiry.phone, 25)
   const when = receivedAt.toISOString()
 
   const text = [
@@ -66,7 +66,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
     '',
     `Name:     ${name}`,
     `Email:    ${inquiry.email}`,
-    `Topic:    ${topic}`,
+    `Phone:    ${phone}`,
     `Received: ${when}`,
     '',
     'Message:',
@@ -80,7 +80,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
     `<tr><td style="padding:4px 16px 4px 0;color:#64748b">${label}</td><td style="padding:4px 0">${escapeHtml(value)}</td></tr>`
   const html = `<!doctype html><html><body style="font-family:Arial,Helvetica,sans-serif;color:#0b1220;font-size:15px;line-height:1.5">
 <p style="margin:0 0 16px;font-weight:bold">New inquiry from the portfolio contact form</p>
-<table role="presentation" style="border-collapse:collapse;margin-bottom:16px">${row('Name', name)}${row('Email', inquiry.email)}${row('Topic', topic)}${row('Received', when)}</table>
+<table role="presentation" style="border-collapse:collapse;margin-bottom:16px">${row('Name', name)}${row('Email', inquiry.email)}${row('Phone', phone)}${row('Received', when)}</table>
 <p style="margin:0 0 6px;color:#64748b">Message</p>
 <div style="white-space:pre-wrap;border-left:3px solid #4d7cfe;padding:4px 0 4px 12px">${escapeHtml(inquiry.message)}</div>
 <p style="margin-top:24px;color:#64748b;font-size:13px">Reply to this email to respond to ${escapeHtml(name)} directly.</p>
@@ -90,7 +90,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
     from: config.mailFrom,
     to: config.mailTo,
     replyTo: { name, address: inquiry.email },
-    subject: headerSafe(`${SUBJECT_PREFIX} ${topic} from ${name}`, 150),
+    subject: headerSafe(`${SUBJECT_PREFIX} ${name}`, 150),
     text,
     html,
   }

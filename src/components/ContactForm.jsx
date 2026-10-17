@@ -1,12 +1,12 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import Button, { ArrowIcon } from './Button.jsx'
-import { INQUIRIES, LIMITS, validateContact, submitContact, ContactError } from '../lib/contact.js'
+import { LIMITS, validateContact, submitContact, ContactError } from '../lib/contact.js'
 import { site } from '../data/site.js'
-import { track } from '../lib/analytics.js'
+import { track } from '../lib/usage.js'
 import './ContactForm.css'
 
-const EMPTY = { name: '', email: '', inquiry: '', message: '', website: '' }
-const FIELD_ORDER = ['name', 'email', 'inquiry', 'message']
+const EMPTY = { firstName: '', lastName: '', email: '', phone: '', message: '', website: '' }
+const FIELD_ORDER = ['firstName', 'lastName', 'email', 'phone', 'message']
 const clock = () => performance.now()
 
 export default function ContactForm() {
@@ -46,7 +46,7 @@ export default function ContactForm() {
   const onSubmit = async (e) => {
     e.preventDefault()
     if (status === 'submitting') return
-    setTouched({ name: true, email: true, inquiry: true, message: true })
+    setTouched(Object.fromEntries(FIELD_ORDER.map((f) => [f, true])))
     const firstInvalid = FIELD_ORDER.find((f) => clientErrors[f])
     if (firstInvalid) {
       formRef.current?.querySelector(`[name="${firstInvalid}"]`)?.focus()
@@ -62,7 +62,7 @@ export default function ContactForm() {
         elapsedMs: clock() - openedAt.current,
       })
       setStatus('success')
-      track('generate_lead', { method: 'contact_form', inquiry_type: values.inquiry })
+      track('generate_lead', { method: 'contact_form' })
     } catch (err) {
       const e2 = err instanceof ContactError ? err : new ContactError('server', 'The message could not be sent.')
       setServerErrors(e2.fieldErrors)
@@ -118,64 +118,46 @@ export default function ContactForm() {
   return (
     <form className="contact-form card" ref={formRef} onSubmit={onSubmit} noValidate aria-describedby={id('privacy')}>
       <div className="contact-form__row">
-        <div className="field">
-          <label className="field__label" htmlFor={id('name')}>
-            Name <span aria-hidden="true">*</span>
-          </label>
-          <input
-            {...field('name')}
-            className="field__input"
-            type="text"
-            autoComplete="name"
-            required
-            maxLength={LIMITS.name.max + 20}
-          />
-          <FieldError id={id('name-error')} message={errorFor('name')} />
-          <span className="visually-hidden" id={id('name-hint')}>
-            Required, {LIMITS.name.min} to {LIMITS.name.max} characters.
-          </span>
-        </div>
-
-        <div className="field">
-          <label className="field__label" htmlFor={id('email')}>
-            Email <span aria-hidden="true">*</span>
-          </label>
-          <input
-            {...field('email')}
-            className="field__input"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            required
-            maxLength={LIMITS.email.max}
-          />
-          <FieldError id={id('email-error')} message={errorFor('email')} />
-          <span className="visually-hidden" id={id('email-hint')}>
-            Required. I&apos;ll reply to this address.
-          </span>
-        </div>
+        <TextField
+          field={field('firstName')}
+          error={errorFor('firstName')}
+          label="First name"
+          hint={`Required, up to ${LIMITS.name.max} characters.`}
+          autoComplete="given-name"
+          maxLength={LIMITS.name.max + 10}
+        />
+        <TextField
+          field={field('lastName')}
+          error={errorFor('lastName')}
+          label="Last name"
+          hint={`Required, up to ${LIMITS.name.max} characters.`}
+          autoComplete="family-name"
+          maxLength={LIMITS.name.max + 10}
+        />
       </div>
 
-      <div className="field">
-        <label className="field__label" htmlFor={id('inquiry')}>
-          What is it about? <span aria-hidden="true">*</span>
-        </label>
-        <div className="field__select-wrap">
-          <select {...field('inquiry')} className="field__input field__select" required>
-            <option value="" disabled>
-              Choose a topic
-            </option>
-            {INQUIRIES.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <FieldError id={id('inquiry-error')} message={errorFor('inquiry')} />
-        <span className="visually-hidden" id={id('inquiry-hint')}>
-          Required.
-        </span>
+      <div className="contact-form__row">
+        <TextField
+          field={field('email')}
+          error={errorFor('email')}
+          label="Email"
+          hint="Required. I'll reply to this address."
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          maxLength={LIMITS.email.max}
+        />
+        <TextField
+          field={field('phone')}
+          error={errorFor('phone')}
+          label="Phone"
+          hint="Required. Include the country code, for example +91."
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="+91 98765 43210"
+          maxLength={LIMITS.phone.max}
+        />
       </div>
 
       <div className="field">
@@ -226,11 +208,26 @@ export default function ContactForm() {
           {status === 'submitting' ? 'Sending your message' : ''}
         </span>
         <p className="contact-form__privacy" id={id('privacy')}>
-          Your name, email and message are used only to reply to this inquiry. They are not added to a mailing list
-          or shared.
+          Your name, email, phone number and message are used only to reply to this inquiry. They are not added to
+          a mailing list or shared.
         </p>
       </div>
     </form>
+  )
+}
+
+function TextField({ field, error, label, hint, type = 'text', ...rest }) {
+  return (
+    <div className="field">
+      <label className="field__label" htmlFor={field.id}>
+        {label} <span aria-hidden="true">*</span>
+      </label>
+      <input {...field} {...rest} className="field__input" type={type} required />
+      <FieldError id={`${field.id}-error`} message={error} />
+      <span className="visually-hidden" id={`${field.id}-hint`}>
+        {hint}
+      </span>
+    </div>
   )
 }
 

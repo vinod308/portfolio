@@ -40,7 +40,7 @@ describe('Vercel function api/contact.js', () => {
       .post('/api/contact')
       .set('Origin', 'https://vinod.vercel.app')
       .set('Content-Type', 'application/json')
-      .send('{"name": 1}')
+      .send('{"firstName": 1}')
     expect(ok.status).toBe(400) // reached validation: origin accepted
 
     const evil = await request(handler)

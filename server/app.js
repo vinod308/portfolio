@@ -9,7 +9,7 @@ import { normalizeContact, validateContact, MIN_FILL_MS } from '../shared/contac
 import { buildMessage } from './mailer.js'
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist')
-const FIELDS = ['name', 'email', 'inquiry', 'message', 'website']
+const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'message', 'website']
 
 const GENERIC_FAILURE = 'The message could not be delivered right now. Please try again in a moment.'
 
@@ -118,7 +118,7 @@ export function createApp({ config, transport, logger = consoleLogger, now = () 
       return res.status(422).json({ ok: false, message: 'Please check the highlighted fields.', errors })
     }
 
-    const meta = { inquiry: values.inquiry, emailDomain: emailDomain(values.email), messageLength: values.message.length }
+    const meta = { emailDomain: emailDomain(values.email), messageLength: values.message.length }
     try {
       const info = await transport.sendMail(buildMessage(values, config, now()))
       if (info?.rejected?.length) {

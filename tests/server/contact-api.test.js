@@ -26,15 +26,15 @@ describe('POST /api/contact: valid submission', () => {
     expect(msg.from).toBe(config.mailFrom)
     expect(msg.to).toBe('vinodvinni308@gmail.com')
     expect(msg.replyTo).toEqual({ name: 'Asha Recruiter', address: 'asha@company.example' })
-    expect(msg.subject).toBe('[Portfolio Inquiry] Job opportunity from Asha Recruiter')
-    for (const part of ['Asha Recruiter', 'asha@company.example', 'Job opportunity', validBody.message]) {
+    expect(msg.subject).toBe('[Portfolio Inquiry] Asha Recruiter')
+    for (const part of ['Asha Recruiter', 'asha@company.example', '+91 98765 43210', validBody.message]) {
       expect(msg.text).toContain(part)
     }
   })
 
   it('normalises whitespace and strips control characters', async () => {
     const { app, transport } = makeApp()
-    await post(app, { ...validBody, name: '  Asha \u0007 Recruiter  ', message: `  ${validBody.message}\r\n\u0000` })
+    await post(app, { ...validBody, firstName: '  Asha \u0007 ', lastName: ' Recruiter  ', message: `  ${validBody.message}\r\n\u0000` })
     const msg = transport.sendMail.mock.calls[0][0]
     expect(msg.replyTo.name).toBe('Asha Recruiter')
     expect(msg.text).toContain(`${validBody.message}\n\n--`)
@@ -46,7 +46,7 @@ describe('POST /api/contact: validation', () => {
     const { app, transport } = makeApp()
     const res = await post(app, { website: '', elapsedMs: 9000 })
     expect(res.status).toBe(422)
-    expect(Object.keys(res.body.errors).sort()).toEqual(['email', 'inquiry', 'message', 'name'])
+    expect(Object.keys(res.body.errors).sort()).toEqual(['email', 'firstName', 'lastName', 'message', 'phone'])
     expect(transport.sendMail).not.toHaveBeenCalled()
   })
 
@@ -59,11 +59,37 @@ describe('POST /api/contact: validation', () => {
     }
   })
 
-  it('rejects an unknown inquiry type', async () => {
-    const { app } = makeApp()
-    const res = await post(app, { ...validBody, inquiry: 'free-money' })
-    expect(res.status).toBe(422)
-    expect(res.body.errors.inquiry).toBeTruthy()
+  it('rejects invalid phone numbers', async () => {
+    const { app } = makeApp({ env: { RATE_LIMIT_MAX: '50' } })
+    for (const phone of ['12345', '+91 98765 43210 12345 678', '98765-abc-10', '91+9876543210', 'call me']) {
+      const res = await post(app, { ...validBody, phone })
+      expect(res.status, phone).toBe(422)
+      expect(res.body.errors.phone, phone).toBeTruthy()
+    }
+    for (const phone of ['+91 98765 43210', '(020) 7946-0958', '9876543210', '+1.415.555.0132']) {
+      expect((await post(app, { ...validBody, phone })).status, phone).toBe(200)
+    }
+  })
+
+  it('rejects names with digits or symbols', async () => {
+    const { app } = makeApp({ env: { RATE_LIMIT_MAX: '50' } })
+    for (const [field, value] of [
+      ['firstName', 'Asha2'],
+      ['lastName', 'x@y.com'],
+      ['firstName', 'Bcc: a'],
+      ['lastName', 'A'.repeat(51)],
+    ]) {
+      const res = await post(app, { ...validBody, [field]: value })
+      expect(res.status, value).toBe(422)
+      expect(res.body.errors[field], value).toBeTruthy()
+    }
+    for (const [firstName, lastName] of [
+      ['José', "O'Neil"],
+      ['Anne-Marie', 'van der Berg'],
+      ['विनोद', 'कुमार'],
+    ]) {
+      expect((await post(app, { ...validBody, firstName, lastName })).status, firstName).toBe(200)
+    }
   })
 
   it('rejects a message over 2000 characters', async () => {
@@ -88,9 +114,10 @@ describe('POST /api/contact: validation', () => {
   })
 
   it('rejects wrong data types', async () => {
-    const { app } = makeApp()
+    const { app } = makeApp({ env: { RATE_LIMIT_MAX: '50' } })
     for (const body of [
-      { ...validBody, name: 123 },
+      { ...validBody, firstName: 123 },
+      { ...validBody, phone: 9876543210 },
       { ...validBody, message: ['a', 'b'] },
       { ...validBody, email: { $gt: '' } },
       { ...validBody, elapsedMs: 'fast' },
@@ -188,7 +215,8 @@ describe('email content safety', () => {
     const { app, transport } = makeApp()
     await post(app, {
       ...validBody,
-      name: 'Eve\r\nBcc: victim@example.com',
+      firstName: 'Eve',
+      lastName: 'Doe\r\nBcc',
       message: '<script>alert(1)</script> and <b>bold</b> text that is long enough',
     })
     const msg = transport.sendMail.mock.calls[0][0]
