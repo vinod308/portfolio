@@ -26,7 +26,7 @@ describe('POST /api/contact: valid submission', () => {
     expect(msg.from).toBe(config.mailFrom)
     expect(msg.to).toBe('vinodvinni308@gmail.com')
     expect(msg.replyTo).toEqual({ name: 'Asha Recruiter', address: 'asha@company.example' })
-    expect(msg.subject).toBe('[Portfolio Inquiry] Asha Recruiter')
+    expect(msg.subject).toBe('New portfolio inquiry from Asha Recruiter')
     for (const part of ['Asha Recruiter', 'asha@company.example', '+91 98765 43210', validBody.message]) {
       expect(msg.text).toContain(part)
     }
@@ -284,5 +284,31 @@ describe.skipIf(!existsSync(DIST_INDEX))('single-service static hosting', () => 
     const missingAsset = await request(app).get('/assets/nope.js')
     expect(missingAsset.status).toBe(404)
     expect((await request(app).get('/api/nope')).headers['content-type']).toMatch(/json/)
+  })
+})
+
+describe('notification email layout', () => {
+  it('shows the received time in India time', async () => {
+    const { formatReceived } = await import('../../server/mailer.js')
+    expect(formatReceived(new Date('2026-10-17T07:47:24Z'))).toBe('Sat, 17 Oct 2026, 1:17 pm IST')
+    expect(formatReceived(new Date('2026-01-05T19:05:00Z'))).toBe('Tue, 6 Jan 2026, 12:35 am IST')
+  })
+
+  it('offers reply, call and WhatsApp actions', async () => {
+    const { app, transport } = makeApp()
+    await post(app, validBody)
+    const { html } = transport.sendMail.mock.calls[0][0]
+    expect(html).toContain('href="mailto:asha@company.example?subject=')
+    expect(html).toContain('href="tel:+919876543210"')
+    expect(html).toContain('href="https://wa.me/919876543210"')
+    expect(html).toContain('Reply to Asha')
+  })
+
+  it('skips WhatsApp when the number has no country code', async () => {
+    const { app, transport } = makeApp()
+    await post(app, { ...validBody, phone: '98765 43210' })
+    const { html } = transport.sendMail.mock.calls[0][0]
+    expect(html).toContain('href="tel:9876543210"')
+    expect(html).not.toContain('wa.me')
   })
 })
