@@ -6,6 +6,7 @@ import { GOOGLE_CLIENT_ID } from '../../shared/admin.js'
 import { ADMIN_API, adminFetch, session } from '../lib/adminApi.js'
 import { markOwner } from '../lib/pulse.js'
 import AdminAnalytics from './AdminAnalytics.jsx'
+import AdminInquiries from './AdminInquiries.jsx'
 import './Admin.css'
 
 /**
@@ -256,8 +257,8 @@ function SetPassword() {
 /* ------------------------------------------------------------- Dashboard */
 
 const NAV = [
-  { label: 'Home', icon: <HomeIcon />, active: true },
-  { label: 'Inquiries', icon: <InboxIcon /> },
+  { label: 'Home', icon: <HomeIcon />, to: '/admin' },
+  { label: 'Inquiries', icon: <InboxIcon />, to: '/admin/inquiries' },
   { label: 'Projects', icon: <FolderIcon /> },
 ]
 
@@ -267,6 +268,24 @@ function greeting(date) {
 }
 
 function Dashboard({ user, onSignOut }) {
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const page = pathname.startsWith('/admin/inquiries') ? '/admin/inquiries' : '/admin'
+  const [newCount, setNewCount] = useState(0)
+  const onCounts = useCallback((counts) => setNewCount(counts?.new ?? 0), [])
+
+  // Badge for unread inquiries, whichever page is open.
+  useEffect(() => {
+    let cancelled = false
+    adminFetch('/inquiries?status=new').then(
+      ({ counts }) => !cancelled && onCounts(counts),
+      () => {},
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [onCounts])
+
   const now = new Date()
   const name = user.name || site.name
   const first = name.split(' ')[0]
@@ -276,6 +295,7 @@ function Dashboard({ user, onSignOut }) {
     .join('')
     .slice(0, 2)
     .toUpperCase()
+  const current = NAV.find((n) => n.to === page)
 
   return (
     <div className="adm-app">
@@ -286,11 +306,22 @@ function Dashboard({ user, onSignOut }) {
         </a>
         <nav className="adm-nav" aria-label="Admin">
           {NAV.map((n) =>
-            n.active ? (
-              <span key={n.label} className="adm-nav__item is-active" aria-current="page">
+            n.to ? (
+              <button
+                key={n.label}
+                type="button"
+                className={`adm-nav__item ${n.to === page ? 'is-active' : ''}`}
+                aria-current={n.to === page ? 'page' : undefined}
+                onClick={() => navigate(n.to)}
+              >
                 {n.icon}
                 {n.label}
-              </span>
+                {n.to === '/admin/inquiries' && newCount > 0 && (
+                  <span className="adm-nav__badge" aria-label={`${newCount} new`}>
+                    {newCount}
+                  </span>
+                )}
+              </button>
             ) : (
               <span key={n.label} className="adm-nav__item is-soon" aria-disabled="true">
                 {n.icon}
@@ -317,19 +348,29 @@ function Dashboard({ user, onSignOut }) {
       <div className="adm-content">
         <header className="adm-top">
           <span className="adm-top__icon" aria-hidden="true">
-            <HomeIcon />
+            {current.icon}
           </span>
-          <h1 className="adm-top__title">Dashboard</h1>
+          <h1 className="adm-top__title">{page === '/admin' ? 'Dashboard' : current.label}</h1>
         </header>
         <main className="adm-main" id="main">
-          <p className="adm-date">
-            {now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-          <h2 className="adm-hello">
-            {greeting(now)}, {first}
-          </h2>
-          <p className="adm-sub">Portfolio admin · vinod-kumar.in</p>
-          <AdminAnalytics />
+          {page === '/admin' ? (
+            <>
+              <p className="adm-date">
+                {now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+              </p>
+              <h2 className="adm-hello">
+                {greeting(now)}, {first}
+              </h2>
+              <p className="adm-sub">Portfolio admin · vinod-kumar.in</p>
+              <AdminAnalytics />
+            </>
+          ) : (
+            <>
+              <h2 className="adm-hello">Inquiries</h2>
+              <p className="adm-sub">Messages from the contact form, newest first.</p>
+              <AdminInquiries onCounts={onCounts} />
+            </>
+          )}
         </main>
       </div>
     </div>

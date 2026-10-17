@@ -53,7 +53,7 @@ console.log('wrote 404.html')
 
 // /admin: an empty, noindex shell (answers 200 on static hosts). The page
 // itself renders client-side after Google sign-in; it is not in the sitemap.
-for (const dir of ['admin', 'admin/set-password']) {
+for (const dir of ['admin', 'admin/set-password', 'admin/inquiries']) {
   write(path.join(outDir, dir, 'index.html'), page(headTags(`/${dir}`, { title: 'Admin' }, { noindex: true })))
 }
 console.log('wrote admin shells')

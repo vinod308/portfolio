@@ -16,6 +16,7 @@ import { SESSION_HOURS, SET_PASSWORD_MINUTES, hashPassword, verifyPassword } fro
 import { buildPasswordEmail } from './mailer.js'
 import { RANGES } from './analytics.js'
 import { searchStats as defaultSearchStats } from './searchConsole.js'
+import { STATUSES } from './inquiries.js'
 
 const GOOGLE_ISSUERS = ['https://accounts.google.com', 'accounts.google.com']
 const GOOGLE_JWKS = 'https://www.googleapis.com/oauth2/v3/certs'
@@ -64,6 +65,7 @@ const limiter = (minutes, limit, message) =>
 export function adminRouter({
   store,
   analytics,
+  inquiries,
   searchStats = defaultSearchStats,
   verifyIdToken,
   transport,
@@ -177,6 +179,31 @@ export function adminRouter({
       logger.error({ event: 'search_console_failed', code: err?.code ?? err?.name })
       res.status(502).json({ ok: false, message: 'Search Console data is unavailable right now.' })
     }
+  })
+
+  // Contact form inquiries (server/inquiries.js).
+  router.get('/inquiries', async (req, res) => {
+    if (!inquiries) return res.status(503).json({ ok: false, message: 'Inquiries are not configured yet.' })
+    const status = STATUSES.includes(req.query.status) ? req.query.status : undefined
+    const q = typeof req.query.q === 'string' ? req.query.q.trim().slice(0, 100) : ''
+    try {
+      res.json({ ok: true, ...(await inquiries.list({ status, q: q || undefined })) })
+    } catch (err) {
+      logger.error({ event: 'inquiries_failed', code: err?.code })
+      res.status(502).json({ ok: false, message: 'Could not load inquiries right now.' })
+    }
+  })
+
+  router.patch('/inquiries/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    const status = req.body?.status
+    if (!inquiries) return res.status(503).json({ ok: false, message: 'Inquiries are not configured yet.' })
+    if (!Number.isSafeInteger(id) || id < 1 || !STATUSES.includes(status)) {
+      return res.status(400).json({ ok: false, message: 'Invalid request.' })
+    }
+    const item = await inquiries.setStatus(id, status)
+    if (!item) return res.status(404).json({ ok: false, message: 'Inquiry not found.' })
+    res.json({ ok: true, item })
   })
 
   router.post('/logout', async (req, res) => {

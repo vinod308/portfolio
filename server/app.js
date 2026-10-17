@@ -10,6 +10,7 @@ import { buildMessage } from './mailer.js'
 import { adminRouter, createGoogleVerifier } from './admin.js'
 import { createNeonStore } from './adminStore.js'
 import { createAnalyticsStore, pulseRouter } from './analytics.js'
+import { createInquiryStore } from './inquiries.js'
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist')
 const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'message', 'website']
@@ -43,6 +44,7 @@ export function createApp({
   adminStore = config.databaseUrl ? createNeonStore(config.databaseUrl) : null,
   analyticsStore = config.databaseUrl ? createAnalyticsStore(config.databaseUrl) : null,
   searchStats,
+  inquiryStore = config.databaseUrl ? createInquiryStore(config.databaseUrl) : null,
 }) {
   const app = express()
   app.disable('x-powered-by')
@@ -76,7 +78,7 @@ export function createApp({
   api.use(
     cors({
       origin: config.clientOrigins,
-      methods: ['GET', 'POST'],
+      methods: ['GET', 'POST', 'PATCH'],
       allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
       maxAge: 600,
     }),
@@ -131,6 +133,10 @@ export function createApp({
     }
 
     const meta = { emailDomain: emailDomain(values.email), messageLength: values.message.length }
+    // Keep a copy for /admin/inquiries. A database problem never blocks the email.
+    const savedId = inquiryStore
+      ? await inquiryStore.add(values).catch((err) => logger.error({ event: 'inquiry_save_failed', code: err?.code }))
+      : undefined
     try {
       const info = await transport.sendMail(buildMessage(values, config, now()))
       if (info?.rejected?.length) {
@@ -138,6 +144,7 @@ export function createApp({
         return res.status(502).json({ ok: false, message: GENERIC_FAILURE })
       }
       logger.info({ event: 'mail_sent', ...meta, messageId: info?.messageId })
+      if (savedId) await inquiryStore.markEmailed(savedId).catch(() => {})
       return res.json({ ok: true })
     } catch (err) {
       logger.error({ event: 'mail_failed', ...meta, ...mailErrorInfo(err) })
@@ -157,7 +164,16 @@ export function createApp({
   api.use(
     '/admin',
     adminLimiter,
-    adminRouter({ store: adminStore, analytics: analyticsStore, searchStats, verifyIdToken, transport, config, logger }),
+    adminRouter({
+      store: adminStore,
+      analytics: analyticsStore,
+      inquiries: inquiryStore,
+      searchStats,
+      verifyIdToken,
+      transport,
+      config,
+      logger,
+    }),
   )
 
   api.use((req, res) => res.status(404).json({ ok: false, message: 'Not found.' }))

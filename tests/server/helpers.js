@@ -49,6 +49,7 @@ export function makeApp({
   adminStore,
   analyticsStore,
   searchStats,
+  inquiryStore,
 } = {}) {
   const config = readConfig({ ...baseEnv, ...env })
   const deps = {
@@ -59,6 +60,7 @@ export function makeApp({
     ...(adminStore && { adminStore }),
     ...(analyticsStore && { analyticsStore }),
     ...(searchStats && { searchStats }),
+    ...(inquiryStore && { inquiryStore }),
   }
   return { app: createApp(deps), transport, logger, config }
 }
