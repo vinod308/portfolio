@@ -1,0 +1,14 @@
+# Hostinger (LiteSpeed/Apache) only; other hosts ignore this file.
+
+# Unknown URLs get the site's own 404 page (noindex), with a 404 status.
+ErrorDocument 404 /404.html
+
+# llms.txt, llms-full.txt and sitemap.xml contain non-ASCII text (é, →).
+AddCharset UTF-8 .txt .xml
+
+# One canonical host: www.vinod-kumar.in -> vinod-kumar.in
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+</IfModule>

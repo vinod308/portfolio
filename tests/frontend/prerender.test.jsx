@@ -57,6 +57,25 @@ describe('prerendered pages', () => {
   })
 })
 
+describe('llms.txt', () => {
+  it('follows the llms.txt layout with absolute links to every page', () => {
+    const txt = server.llmsTxt()
+    expect(txt).toMatch(/^# Vinod Kumar\n\n> /)
+    for (const { path } of server.ROUTES) expect(txt).toContain(`(${SITE}${path === '/' ? '/' : `${path}/`})`)
+    expect(txt).toContain(`(${SITE}/llms-full.txt)`)
+    expect(txt).toContain('(https://www.linkedin.com/in/vinod308)')
+  })
+
+  it('includes case study content but leaves out the unconfirmed decisions', () => {
+    const full = server.llmsFullTxt()
+    expect(full).toContain('Built the integrations with 4 AI providers.')
+    expect(full).toContain('Garage Productions Pvt Ltd')
+    expect(full).toContain('**Workflow: How the modules I owned relate.**')
+    // A "decisions" entry marked CONFIRM in projects.js
+    expect(full).not.toContain('One pipeline for every provider')
+  })
+})
+
 describe('structured data', () => {
   it('describes the person with facts from site.js', () => {
     const person = structuredData('/')['@graph'].find((n) => n['@type'] === 'Person')

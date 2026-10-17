@@ -5,10 +5,11 @@ import { prerender } from 'react-dom/static'
 import { StaticRouter } from 'react-router'
 import { AppRoutes } from './App.jsx'
 import { caseStudies } from './data/projects.js'
-import { PAGE_META, caseStudyMeta, pageUrl, resolveMeta } from './lib/pageMeta.js'
+import { PAGE_META, SITE_URL, caseStudyMeta, pageUrl, resolveMeta } from './lib/pageMeta.js'
 import { structuredData } from './lib/structuredData.js'
 
-export { PAGE_META }
+export { PAGE_META, SITE_URL }
+export { llmsTxt, llmsFullTxt } from './lib/llmsText.js'
 
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '')
 

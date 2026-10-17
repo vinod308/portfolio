@@ -207,6 +207,14 @@ Titles and descriptions live in `src/lib/pageMeta.js`, shared by the
 prerender and by `usePageMeta` for client-side navigation. A new case study in
 `projects.js` is prerendered and added to the sitemap automatically.
 
+For AI assistants and answer engines the build also writes `llms.txt` (a
+[llmstxt.org](https://llmstxt.org) index) and `llms-full.txt` (all site content
+as Markdown), from `src/lib/llmsText.js`. Case study "decisions" are left out
+of them until the `CONFIRM` notes in `projects.js` are resolved. `robots.txt`
+names the major AI crawlers explicitly as allowed. `public/.htaccess` is for
+Hostinger: it serves `404.html` for unknown URLs and redirects `www` to the
+bare domain.
+
 ## Troubleshooting email delivery
 
 | Symptom | Likely cause / fix |

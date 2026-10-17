@@ -4,10 +4,26 @@ import { caseStudies } from './src/data/projects.js'
 
 const ROUTES = ['/', '/projects', '/about', '/contact', ...caseStudies.map((p) => `/projects/${p.slug}`)]
 
+// Already allowed by "User-agent: *"; named so it is explicit that AI search,
+// assistant and training crawlers are welcome (a portfolio wants to be cited).
+const AI_CRAWLERS = [
+  'GPTBot',
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'ClaudeBot',
+  'Claude-SearchBot',
+  'Claude-User',
+  'PerplexityBot',
+  'Perplexity-User',
+  'Google-Extended',
+  'Applebot-Extended',
+  'CCBot',
+]
+
 /**
  * Fills absolute URLs into index.html (__SITE_URL__) and, when VITE_SITE_URL
  * is set, emits sitemap.xml. robots.txt is always emitted. Per-page HTML,
- * canonical links and 404.html come from scripts/prerender.js.
+ * canonical links, 404.html and llms.txt come from scripts/prerender.js.
  */
 function siteMeta(siteUrl, trailingSlash) {
   return {
@@ -16,7 +32,15 @@ function siteMeta(siteUrl, trailingSlash) {
       return html.replaceAll('__SITE_URL__', siteUrl)
     },
     generateBundle() {
-      const robots = ['User-agent: *', 'Allow: /', ...(siteUrl ? [`Sitemap: ${siteUrl}/sitemap.xml`] : []), '']
+      const robots = [
+        'User-agent: *',
+        'Allow: /',
+        '',
+        ...AI_CRAWLERS.map((bot) => `User-agent: ${bot}`),
+        'Allow: /',
+        '',
+        ...(siteUrl ? [`# AI-readable summary: ${siteUrl}/llms.txt`, `Sitemap: ${siteUrl}/sitemap.xml`, ''] : []),
+      ]
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robots.join('\n') })
       if (!siteUrl) return
       const loc = (r) => (r === '/' ? '/' : trailingSlash ? `${r}/` : r)

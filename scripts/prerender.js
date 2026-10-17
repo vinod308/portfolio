@@ -10,7 +10,7 @@ import { pathToFileURL } from 'node:url'
 
 const outDir = path.resolve(process.argv[2] || 'dist')
 const ssrEntry = path.resolve(process.argv[3] || 'node_modules/.prerender/entry-server.js')
-const { PAGE_META, ROUTES, headTags, renderRoute } = await import(pathToFileURL(ssrEntry).href)
+const { PAGE_META, ROUTES, SITE_URL, headTags, llmsFullTxt, llmsTxt, renderRoute } = await import(pathToFileURL(ssrEntry).href)
 
 const ROOT = '<div id="root"></div>'
 // Page-specific tags in index.html; each page gets its own from headTags().
@@ -50,3 +50,10 @@ for (const { path: route, meta } of ROUTES) {
 // can't know the URL in advance) and asks search engines not to index it.
 write(path.join(outDir, '404.html'), page(headTags('/404', PAGE_META.notFound, { noindex: true })))
 console.log('wrote 404.html')
+
+// Markdown versions for AI assistants; their links need absolute URLs.
+if (SITE_URL) {
+  write(path.join(outDir, 'llms.txt'), llmsTxt())
+  write(path.join(outDir, 'llms-full.txt'), llmsFullTxt())
+  console.log('wrote llms.txt, llms-full.txt')
+}
