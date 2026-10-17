@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import Button, { ArrowIcon } from './Button.jsx'
 import { INQUIRIES, LIMITS, validateContact, submitContact, ContactError } from '../lib/contact.js'
 import { site } from '../data/site.js'
+import { track } from '../lib/analytics.js'
 import './ContactForm.css'
 
 const EMPTY = { name: '', email: '', inquiry: '', message: '', website: '' }
@@ -61,6 +62,7 @@ export default function ContactForm() {
         elapsedMs: clock() - openedAt.current,
       })
       setStatus('success')
+      track('generate_lead', { method: 'contact_form', inquiry_type: values.inquiry })
     } catch (err) {
       const e2 = err instanceof ContactError ? err : new ContactError('server', 'The message could not be sent.')
       setServerErrors(e2.fieldErrors)

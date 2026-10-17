@@ -49,6 +49,23 @@
   color: var(--color-text-muted);
 }
 
+.footer__settings {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.footer__settings:hover {
+  color: var(--color-link-hover);
+}
+
 @media (min-width: 48rem) {
   .footer__inner {
     grid-template-columns: 2fr 1fr 1fr;

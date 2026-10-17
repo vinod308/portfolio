@@ -7,6 +7,8 @@ export const site = {
   email: 'vinodvinni308@gmail.com',
   // BASE_URL is '/' normally and '/portfolio/' on GitHub Pages
   resume: `${import.meta.env.BASE_URL}Vinod_Kumar_Resume.pdf`,
+  // GA4 runs only on `host` and only after the visitor accepts (lib/analytics.js).
+  analytics: { gaId: null, host: 'vinod-kumar.in' },
   socials: [
     { label: 'GitHub', href: 'https://github.com/vinod308' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/vinod308' },

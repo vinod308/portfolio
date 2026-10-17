@@ -6,6 +6,7 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/layout.css'
 import App from './App.jsx'
+import { initAnalytics } from './lib/analytics.js'
 
 const app = (
   <StrictMode>
@@ -24,3 +25,5 @@ if (root.dataset.route === path) {
   root.replaceChildren()
   createRoot(root).render(app)
 }
+
+initAnalytics()

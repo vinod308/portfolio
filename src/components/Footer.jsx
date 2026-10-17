@@ -5,11 +5,13 @@ import Logo from './Logo.jsx'
 import { site } from '../data/site.js'
 import { navLinks } from '../data/content.js'
 import { useMotion, reveal } from '../lib/motion.js'
+import { openConsentSettings, useConsent } from '../lib/analytics.js'
 import './Footer.css'
 
 export default function Footer() {
   const year = new Date().getFullYear()
   const ref = useRef(null)
+  const analytics = useConsent()
 
   useMotion(ref, (q) => {
     reveal(q('.footer__col'), { trigger: ref.current, start: 'top 96%', y: 16, stagger: 0.08 })
@@ -56,6 +58,14 @@ export default function Footer() {
 
         <p className="footer__legal mono-label">
           © {year} {site.name} · {site.location}
+          {analytics.enabled && (
+            <>
+              {' · '}
+              <button type="button" className="footer__settings" onClick={openConsentSettings}>
+                Cookie settings
+              </button>
+            </>
+          )}
         </p>
       </Container>
     </footer>

@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import Navbar from './Navbar.jsx'
 import Footer from './Footer.jsx'
+import ConsentBanner from './ConsentBanner.jsx'
 import { site } from '../data/site.js'
 import { navLinks } from '../data/content.js'
 import { prefersReducedMotion, ScrollTrigger } from '../lib/motion.js'
@@ -47,6 +48,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <ConsentBanner />
     </>
   )
 }

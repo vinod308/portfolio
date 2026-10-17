@@ -1,0 +1,27 @@
+.consent {
+  position: fixed;
+  inset-inline: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 60;
+  display: grid;
+  gap: var(--space-4);
+  max-width: 26rem;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-raised);
+}
+
+.consent__text {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-muted);
+}
+
+.consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
