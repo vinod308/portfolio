@@ -15,6 +15,7 @@ import { GOOGLE_CLIENT_ID, isAdminEmail } from '../shared/admin.js'
 import { SESSION_HOURS, SET_PASSWORD_MINUTES, hashPassword, verifyPassword } from './adminStore.js'
 import { buildPasswordEmail } from './mailer.js'
 import { RANGES } from './analytics.js'
+import { searchStats as defaultSearchStats } from './searchConsole.js'
 
 const GOOGLE_ISSUERS = ['https://accounts.google.com', 'accounts.google.com']
 const GOOGLE_JWKS = 'https://www.googleapis.com/oauth2/v3/certs'
@@ -60,7 +61,15 @@ const limiter = (minutes, limit, message) =>
     handler: (req, res) => res.status(429).json({ ok: false, message }),
   })
 
-export function adminRouter({ store, analytics, verifyIdToken, transport, config, logger }) {
+export function adminRouter({
+  store,
+  analytics,
+  searchStats = defaultSearchStats,
+  verifyIdToken,
+  transport,
+  config,
+  logger,
+}) {
   const router = express.Router()
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store')
@@ -156,6 +165,17 @@ export function adminRouter({ store, analytics, verifyIdToken, transport, config
     } catch (err) {
       logger.error({ event: 'stats_failed', code: err?.code })
       res.status(502).json({ ok: false, message: 'Could not load analytics right now.' })
+    }
+  })
+
+  // Google Search Console (server/searchConsole.js); works only on Vercel production.
+  router.get('/search', async (req, res) => {
+    const days = RANGES[req.query.range] ?? RANGES['7d']
+    try {
+      res.json({ ok: true, days, ...(await searchStats(days)) })
+    } catch (err) {
+      logger.error({ event: 'search_console_failed', code: err?.code ?? err?.name })
+      res.status(502).json({ ok: false, message: 'Search Console data is unavailable right now.' })
     }
   })
 

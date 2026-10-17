@@ -48,6 +48,7 @@ export function makeApp({
   verifyIdToken,
   adminStore,
   analyticsStore,
+  searchStats,
 } = {}) {
   const config = readConfig({ ...baseEnv, ...env })
   const deps = {
@@ -57,6 +58,7 @@ export function makeApp({
     ...(verifyIdToken && { verifyIdToken }),
     ...(adminStore && { adminStore }),
     ...(analyticsStore && { analyticsStore }),
+    ...(searchStats && { searchStats }),
   }
   return { app: createApp(deps), transport, logger, config }
 }

@@ -152,6 +152,8 @@ export default function AdminAnalytics() {
         </details>
       </div>
 
+      <SearchSection range={range} days={days} />
+
       <div className="an__lists">
         <BarList title="Top pages" rows={data?.pages} format={(k) => k} />
         <BarList title="Traffic sources" rows={data?.sources} format={(k) => k ?? 'direct'} />
@@ -279,6 +281,98 @@ function BarList({ title, rows, format }) {
       ) : (
         <div className="an__empty">No data yet.</div>
       )}
+    </div>
+  )
+}
+
+const pct = (v) => `${(v * 100).toFixed(1)}%`
+const pos = (v) => (v ? v.toFixed(1) : '—')
+
+/** Google Search Console: how people find the site on Google. Loads on its own. */
+function SearchSection({ range, days }) {
+  const [result, setResult] = useState({ range: null, data: null, error: '' })
+  useEffect(() => {
+    let cancelled = false
+    adminFetch(`/search?range=${range}`).then(
+      (data) => !cancelled && setResult({ range, data, error: '' }),
+      (err) => !cancelled && setResult({ range, data: null, error: err.message }),
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [range])
+  const { data, error } = result
+  const cur = data?.current ?? {}
+  const prev = data?.previous ?? {}
+  const tiles = [
+    { label: 'Google clicks', value: cur.clicks, previous: prev.clicks, fmt: (v) => nf.format(v ?? 0) },
+    { label: 'Impressions', value: cur.impressions, previous: prev.impressions, fmt: (v) => nf.format(v ?? 0) },
+    { label: 'Click-through rate', value: cur.ctr, previous: prev.ctr, fmt: (v) => pct(v ?? 0) },
+    // Lower is better for position, so the arrow flips.
+    { label: 'Avg. position', value: cur.position, previous: prev.position, fmt: pos, lowerIsBetter: true },
+  ]
+  return (
+    <div className="an__card" aria-busy={result.range !== range}>
+      <div className="an__card-head">
+        <h4>Google Search</h4>
+        <span className="an__muted">From Search Console · data lags about 2 days</span>
+      </div>
+      {error ? (
+        <p className="an__empty">{error}</p>
+      ) : (
+        <>
+          <div className="an__tiles an__tiles--flat">
+            {tiles.map((t) => (
+              <SearchTile key={t.label} tile={t} days={days} />
+            ))}
+          </div>
+          <h5 className="an__subhead">Top search queries</h5>
+          {data?.queries?.length ? (
+            <ul className="an__bars">
+              {data.queries.map((q) => {
+                const max = Math.max(1, ...data.queries.map((r) => r.impressions))
+                return (
+                  <li key={q.key} title={`${q.key}: ${nf.format(q.impressions)} impressions, ${nf.format(q.clicks)} clicks, position ${pos(q.position)}`}>
+                    <span className="an__bar" style={{ width: `${(q.impressions / max) * 100}%` }} aria-hidden="true" />
+                    <span className="an__bar-label">{q.key}</span>
+                    <span className="an__bar-value">
+                      {nf.format(q.impressions)} · {nf.format(q.clicks)} clicks
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          ) : (
+            <div className="an__empty">No search data yet. New sites usually show up within a few days to two weeks.</div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+function SearchTile({ tile, days }) {
+  const { value = 0, previous = 0, lowerIsBetter } = tile
+  let change = null
+  if (previous > 0 && value > 0) {
+    const raw = Math.round(((value - previous) / previous) * 100)
+    change = { pct: raw, good: lowerIsBetter ? raw < 0 : raw > 0, up: raw > 0 }
+  }
+  return (
+    <div className="an__tile">
+      <span className="an__tile-label">{tile.label}</span>
+      <strong className="an__tile-value">{tile.fmt(value)}</strong>
+      <span className={`an__delta ${change && change.pct !== 0 ? (change.good ? 'is-up' : 'is-down') : ''}`}>
+        {change ? (
+          <>
+            {change.pct !== 0 && <span aria-hidden="true">{change.up ? '↑' : '↓'}</span>}
+            {Math.abs(change.pct)}%
+          </>
+        ) : (
+          '—'
+        )}
+        <span className="an__delta-ctx"> vs previous {days === 1 ? 'day' : `${days} days`}</span>
+      </span>
     </div>
   )
 }

@@ -73,3 +73,16 @@ describe('classification helpers', () => {
     expect(parsePulse({ type: 'engage', path: '/', ms: 999_999_999 }).value).toBe(30 * 60_000)
   })
 })
+
+describe('admin search endpoint', () => {
+  it('returns Search Console data for a session, and 502 when Google fails', async () => {
+    const adminStore = createMemoryStore()
+    const token = await adminStore.createToken('vinodvinni308@gmail.com', 'session', 60)
+    const ok = makeApp({ adminStore, searchStats: async (days) => ({ current: { clicks: 4 }, previous: { clicks: 2 }, queries: [], pages: [], days }) })
+    const res = await request(ok.app).get('/api/admin/search?range=15d').set('Origin', 'http://localhost:5173').set('Authorization', `Bearer ${token}`)
+    expect(res.body).toMatchObject({ ok: true, days: 15, current: { clicks: 4 } })
+    const failing = makeApp({ adminStore, searchStats: async () => { throw new Error('google_403') } })
+    const bad = await request(failing.app).get('/api/admin/search').set('Origin', 'http://localhost:5173').set('Authorization', `Bearer ${token}`)
+    expect(bad.status).toBe(502)
+  })
+})

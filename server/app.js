@@ -42,6 +42,7 @@ export function createApp({
   verifyIdToken = createGoogleVerifier(),
   adminStore = config.databaseUrl ? createNeonStore(config.databaseUrl) : null,
   analyticsStore = config.databaseUrl ? createAnalyticsStore(config.databaseUrl) : null,
+  searchStats,
 }) {
   const app = express()
   app.disable('x-powered-by')
@@ -156,7 +157,7 @@ export function createApp({
   api.use(
     '/admin',
     adminLimiter,
-    adminRouter({ store: adminStore, analytics: analyticsStore, verifyIdToken, transport, config, logger }),
+    adminRouter({ store: adminStore, analytics: analyticsStore, searchStats, verifyIdToken, transport, config, logger }),
   )
 
   api.use((req, res) => res.status(404).json({ ok: false, message: 'Not found.' }))
