@@ -10,15 +10,12 @@ import ContactCTA from '../sections/ContactCTA.jsx'
 import { principles, skillGroups } from '../data/content.js'
 import { site } from '../data/site.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
+import { PAGE_META } from '../lib/pageMeta.js'
 import { useMotion, reveal } from '../lib/motion.js'
 import './About.css'
 
 export default function About() {
-  usePageMeta({
-    title: 'About',
-    description:
-      'About Vinod Kumar: full stack developer in Noida with nearly 7 years of experience in React, Node.js, PostgreSQL, AI integrations and production deployment.',
-  })
+  usePageMeta(PAGE_META.about)
   const ref = useRef(null)
 
   useMotion(ref, (q) => {

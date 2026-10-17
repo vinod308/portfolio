@@ -7,6 +7,7 @@ import Button, { ArrowIcon, ExternalIcon } from '../components/Button.jsx'
 import ProjectMockup from '../sections/ProjectMockup.jsx'
 import { caseStudies, getProject, projectPath, hostOf } from '../data/projects.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
+import { caseStudyMeta } from '../lib/pageMeta.js'
 import { useMotion, gsap, reveal, animateMockup } from '../lib/motion.js'
 import NotFound from './NotFound.jsx'
 import './ProjectDetail.css'
@@ -30,7 +31,7 @@ export default function ProjectDetail() {
 
 function CaseStudy({ project: p }) {
   const cs = p.caseStudy
-  usePageMeta({ title: `${p.name} case study`, description: cs.overview })
+  usePageMeta(caseStudyMeta(p))
   const ref = useRef(null)
 
   const index = caseStudies.findIndex((c) => c.slug === p.slug)

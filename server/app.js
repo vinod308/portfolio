@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
@@ -143,14 +144,16 @@ export function createApp({ config, transport, logger = consoleLogger, now = () 
     )
     // redirect:false: per-route folders (built for static hosts) must not 301 to a trailing slash
     app.use(express.static(DIST, { index: false, redirect: false, maxAge: '1h' }))
-    // SPA fallback: any other GET that wants HTML gets index.html, so
-    // /projects/haylow and other client routes work on direct load.
+    // Pages: /projects/haylow gets its prerendered dist/projects/haylow/index.html;
+    // unknown URLs get 404.html with a 404 status (the app renders the 404 page).
     app.use((req, res, next) => {
-      if ((req.method === 'GET' || req.method === 'HEAD') && req.accepts('html')) {
-        res.set('Cache-Control', 'no-cache')
-        return res.sendFile(path.join(DIST, 'index.html'))
-      }
-      next()
+      if ((req.method !== 'GET' && req.method !== 'HEAD') || !req.accepts('html')) return next()
+      res.set('Cache-Control', 'no-cache')
+      const page = path.join(DIST, path.normalize(req.path), 'index.html')
+      if (page.startsWith(DIST + path.sep) && existsSync(page)) return res.sendFile(page)
+      const notFound = path.join(DIST, '404.html')
+      if (existsSync(notFound)) return res.status(404).sendFile(notFound)
+      return res.sendFile(path.join(DIST, 'index.html'))
     })
   }
 

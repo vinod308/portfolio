@@ -241,13 +241,18 @@ describe('HTTP hardening', () => {
 
 const DIST_INDEX = path.resolve(import.meta.dirname, '../../dist/index.html')
 describe.skipIf(!existsSync(DIST_INDEX))('single-service static hosting', () => {
-  it('serves the SPA for nested routes and keeps /api JSON', async () => {
+  it('serves each prerendered page, 404s unknown pages and keeps /api JSON', async () => {
     const { app } = makeApp({ env: { SERVE_STATIC: 'true' } })
-    for (const p of ['/', '/projects/haylow', '/about', '/contact', '/does-not-exist']) {
+    for (const p of ['/', '/projects/haylow', '/about/', '/contact']) {
       const res = await request(app).get(p).set('Accept', 'text/html')
       expect(res.status, p).toBe(200)
-      expect(res.text, p).toContain('<div id="root">')
+      expect(res.text, p).toContain(`<div id="root" data-route="${p.replace(/(.)\/$/, '$1')}">`)
     }
+    const unknown = await request(app).get('/does-not-exist').set('Accept', 'text/html')
+    expect(unknown.status).toBe(404)
+    expect(unknown.text).toContain('<meta name="robots" content="noindex" />')
+    const escape = await request(app).get('/../package.json').set('Accept', 'text/html')
+    expect(escape.status).toBe(404)
     const missingAsset = await request(app).get('/assets/nope.js')
     expect(missingAsset.status).toBe(404)
     expect((await request(app).get('/api/nope')).headers['content-type']).toMatch(/json/)

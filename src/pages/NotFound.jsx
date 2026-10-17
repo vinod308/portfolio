@@ -4,10 +4,11 @@ import PageHeader from '../components/PageHeader.jsx'
 import Button from '../components/Button.jsx'
 import { caseStudies, projectPath } from '../data/projects.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
+import { PAGE_META } from '../lib/pageMeta.js'
 import './NotFound.css'
 
 export default function NotFound() {
-  usePageMeta({ title: 'Page not found', description: 'This page does not exist on Vinod Kumar’s portfolio.' })
+  usePageMeta(PAGE_META.notFound)
   return (
     <div className="page">
       <Container size="narrow">

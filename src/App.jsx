@@ -18,20 +18,29 @@ function LegacyWorkRedirect() {
 
 const page = (el) => <Suspense fallback={<div className="page" aria-busy="true" />}>{el}</Suspense>
 
+const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '')
+
+/** The route tree, shared by the browser app and the build-time prerender. */
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="projects" element={page(<Projects />)} />
+        <Route path="projects/:slug" element={page(<ProjectDetail />)} />
+        <Route path="about" element={page(<About />)} />
+        <Route path="contact" element={page(<Contact />)} />
+        <Route path="work/:slug" element={<LegacyWorkRedirect />} />
+        <Route path="*" element={page(<NotFound />)} />
+      </Route>
+    </Routes>
+  )
+}
+
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="projects" element={page(<Projects />)} />
-          <Route path="projects/:slug" element={page(<ProjectDetail />)} />
-          <Route path="about" element={page(<About />)} />
-          <Route path="contact" element={page(<Contact />)} />
-          <Route path="work/:slug" element={<LegacyWorkRedirect />} />
-          <Route path="*" element={page(<NotFound />)} />
-        </Route>
-      </Routes>
+    <BrowserRouter basename={BASENAME}>
+      <AppRoutes />
     </BrowserRouter>
   )
 }

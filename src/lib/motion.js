@@ -20,7 +20,7 @@ gsap.defaults({ ease: 'power3.out', duration: 0.8 })
 gsap.config({ nullTargetWarn: false })
 
 // Dev-only handle for inspecting active triggers from the console.
-if (import.meta.env.DEV) window.__motion = { gsap, ScrollTrigger }
+if (import.meta.env.DEV && typeof window !== 'undefined') window.__motion = { gsap, ScrollTrigger }
 
 export const MEDIA = {
   motion: '(prefers-reduced-motion: no-preference)',

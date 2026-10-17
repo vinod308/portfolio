@@ -6,15 +6,12 @@ import Button, { ArrowIcon } from '../components/Button.jsx'
 import { CONTACT_FORM_ENABLED } from '../lib/contact.js'
 import { site } from '../data/site.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
+import { PAGE_META } from '../lib/pageMeta.js'
 import { useMotion, reveal } from '../lib/motion.js'
 import './Contact.css'
 
 export default function Contact() {
-  usePageMeta({
-    title: 'Contact',
-    description:
-      'Contact Vinod Kumar about full stack engineering roles, product development or AI integration work. Email vinodvinni308@gmail.com.',
-  })
+  usePageMeta(PAGE_META.contact)
   const ref = useRef(null)
 
   useMotion(ref, (q) => {

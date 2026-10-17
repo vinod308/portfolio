@@ -6,19 +6,18 @@ import ProjectCard from '../components/ProjectCard.jsx'
 import Button from '../components/Button.jsx'
 import { CATEGORIES, projects } from '../data/projects.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
+import { PAGE_META } from '../lib/pageMeta.js'
+import { useHydrated } from '../lib/useHydrated.js'
 import { gsap, prefersReducedMotion } from '../lib/motion.js'
 import './Projects.css'
 
 const FILTERS = [{ id: 'all', label: 'All' }, ...CATEGORIES]
 
 export default function Projects() {
-  usePageMeta({
-    title: 'Projects',
-    description:
-      'SaaS products, AI applications, e-commerce storefronts and web platforms built by Vinod Kumar with React, Node.js, PostgreSQL, Shopify and WordPress.',
-  })
+  usePageMeta(PAGE_META.projects)
   const [params, setParams] = useSearchParams()
-  const requested = params.get('category')
+  // The prerendered page shows every project; apply ?category= once hydrated.
+  const requested = useHydrated() ? params.get('category') : null
   const active = FILTERS.some((f) => f.id === requested) ? requested : 'all'
   const visible = active === 'all' ? projects : projects.filter((p) => p.categories.includes(active))
   const gridRef = useRef(null)

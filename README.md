@@ -40,7 +40,7 @@ browser calls `/api/contact` on its own origin. `CLIENT_ORIGIN` in
 | `npm run dev` | Frontend dev server |
 | `npm run dev:server` | API with file watching, env from `server/.env` |
 | `npm start` | API without watching (production entry point) |
-| `npm run build` | Production frontend build into `dist/` |
+| `npm run build` | Production frontend build into `dist/`, then prerenders every page (see below) |
 | `npm test` | All automated tests (never sends real email) |
 | `npm run lint` | ESLint |
 
@@ -174,19 +174,38 @@ SERVE_STATIC=true NODE_ENV=production npm start
 
 Set `CLIENT_ORIGIN` to the public site origin (e.g. `https://yourdomain.com`)
 and `TRUST_PROXY=1` if the platform puts a proxy in front. Express serves
-hashed assets with long-lived caching and returns `index.html` for client
-routes, so `/projects/haylow` and other routes load directly.
+hashed assets with long-lived caching, each page's prerendered
+`index.html` (so `/projects/haylow` loads directly) and `404.html` with a
+404 status for unknown URLs.
 
-**Option B: static frontend + separate API.** Deploy `dist/` to a static host
-with a rewrite of all non-file paths to `/index.html` (for direct loads of
-nested routes). Either proxy `/api/*` on the static host to the API service
+**Option B: static frontend + separate API.** Deploy `dist/` to any static
+host: every page has its own `index.html` folder and unknown URLs should get
+`404.html`. Either proxy `/api/*` on the static host to the API service
 (keeps `VITE_CONTACT_ENDPOINT=/api/contact`), or build with
 `VITE_CONTACT_ENDPOINT=https://api.yourdomain.com/api/contact` and set the
 API's `CLIENT_ORIGIN` to the site origin.
 
-In both cases set `VITE_SITE_URL` at build time so social previews and the
-sitemap use absolute URLs. The in-memory rate limiter is per process; if you
-run several API instances, use a shared store (e.g. Redis) for `express-rate-limit`.
+In both cases set `VITE_SITE_URL` at build time so social previews, canonical
+links, JSON-LD and the sitemap use absolute URLs. The in-memory rate limiter is
+per process; if you run several API instances, use a shared store (e.g. Redis)
+for `express-rate-limit`.
+
+### Prerendering and structured data
+
+`npm run build` runs three steps: the normal client build, an SSR build of
+`src/entry-server.jsx` into `node_modules/.prerender/`, and
+`scripts/prerender.js`, which writes a fully rendered `index.html` for every
+page in `ROUTES` (home, projects, about, contact, each case study). Crawlers
+that don't run JavaScript (AI crawlers, LinkedIn/WhatsApp previews) get the
+real content plus that page's title, description, canonical link and
+schema.org JSON-LD (`src/lib/structuredData.js`: Person, WebSite,
+ProfilePage, Article and BreadcrumbList, built only from `site.js` and
+`projects.js`). The browser then hydrates the HTML. `404.html` is a
+client-rendered shell marked `noindex`.
+
+Titles and descriptions live in `src/lib/pageMeta.js`, shared by the
+prerender and by `usePageMeta` for client-side navigation. A new case study in
+`projects.js` is prerendered and added to the sitemap automatically.
 
 ## Troubleshooting email delivery
 
@@ -207,6 +226,7 @@ run several API instances, use a shared store (e.g. Redis) for `express-rate-lim
 ```
 public/                   favicon, apple-touch-icon, og-image, résumé PDF, brand/ logos
 scripts/build-brand.py    generates the logo/favicon SVGs
+scripts/prerender.js      writes the prerendered page HTML (last step of npm run build)
 server/
   index.js                entry point: config, SMTP verify, listen, graceful shutdown
   app.js                  Express app: security, rate limit, /api/contact, static hosting
@@ -216,12 +236,14 @@ server/
 shared/contact.js         validation rules used by browser and server
 src/
   App.jsx                 routes (lazy-loaded inner pages)
+  entry-server.jsx        build-time renderer: page list, head tags, route HTML
   components/             Layout, Navbar, Footer, Logo, Button, Container, SectionHeading,
                           PageHeader, Portrait, CapabilityList, ProjectCard, WorkflowDiagram, ContactForm
   sections/               homepage sections
   pages/                  Home, Projects, ProjectDetail, About, Contact, NotFound
   data/                   site.js, projects.js (single source of project content), content.js
-  lib/                    motion.js (GSAP), contact.js (API client), usePageMeta.js
+  lib/                    motion.js (GSAP), contact.js (API client), pageMeta.js + usePageMeta.js,
+                          structuredData.js (JSON-LD), useHydrated.js
   styles/                 tokens.css, base.css, layout.css
 tests/                    server/, shared/, frontend/, assets.test.js
 ```

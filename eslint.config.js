@@ -27,11 +27,12 @@ export default defineConfig([
     },
   },
   {
-    files: ['api/**/*.js', 'server/**/*.js', 'shared/**/*.js', 'tests/**/*.{js,jsx}', 'vite.config.js', 'eslint.config.js'],
+    files: ['api/**/*.js', 'scripts/**/*.js', 'server/**/*.js', 'shared/**/*.js', 'tests/**/*.{js,jsx}', 'vite.config.js', 'eslint.config.js'],
     languageOptions: { globals: { ...globals.node } },
   },
   {
-    files: ['tests/**/*.{js,jsx}'],
+    // Not hot-reloaded: tests, and the build-time prerender entry.
+    files: ['tests/**/*.{js,jsx}', 'src/entry-server.jsx'],
     rules: { 'react-refresh/only-export-components': 'off' },
   },
 ])
