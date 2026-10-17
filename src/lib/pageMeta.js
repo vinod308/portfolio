@@ -7,29 +7,29 @@ const TRAILING_SLASH = import.meta.env.VITE_TRAILING_SLASH === 'true'
 
 export const DEFAULT_TITLE = 'Vinod Kumar · Full Stack Developer & AI Application Engineer'
 export const DEFAULT_DESCRIPTION =
-  'Vinod Kumar is a Full Stack Developer and AI Application Engineer in Noida, India, building production SaaS applications with React, Node.js, PostgreSQL and AI integrations.'
+  'Vinod Kumar is a Full Stack Developer and AI Application Engineer in Noida, India, building production SaaS with React, Node.js, PostgreSQL and AI.'
 
 export const PAGE_META = {
   home: {},
   projects: {
-    title: 'Projects',
+    title: 'SaaS, AI and Web Development Projects',
     description:
       'SaaS products, AI applications, e-commerce storefronts and web platforms built by Vinod Kumar with React, Node.js, PostgreSQL, Shopify and WordPress.',
   },
   about: {
-    title: 'About',
+    title: 'About · Full Stack Developer in Noida, India',
     description:
       'About Vinod Kumar: full stack developer in Noida with nearly 7 years of experience in React, Node.js, PostgreSQL, AI integrations and production deployment.',
   },
   contact: {
-    title: 'Contact',
+    title: 'Contact for Full Stack & AI Roles',
     description:
       'Contact Vinod Kumar about full stack engineering roles, product development or AI integration work. Email vinodvinni308@gmail.com.',
   },
   notFound: { title: 'Page not found', description: 'This page does not exist on Vinod Kumar’s portfolio.' },
 }
 
-export const caseStudyMeta = (p) => ({ title: `${p.name} case study`, description: p.caseStudy.overview })
+export const caseStudyMeta = (p) => ({ title: `${p.name}: ${p.kind}`, description: p.caseStudy.overview })
 
 /** Full title and description with site defaults applied. */
 export function resolveMeta({ title, description } = {}) {

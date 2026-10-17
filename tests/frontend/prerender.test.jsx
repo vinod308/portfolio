@@ -24,6 +24,22 @@ describe('prerendered pages', () => {
     )
   })
 
+  it('keeps every title within 60 characters and descriptions within 160', () => {
+    for (const { path, meta } of server.ROUTES) {
+      const head = server.headTags(path, meta)
+      const title = head.match(/<title>(.*)<\/title>/)[1].replace(/&amp;/g, '&')
+      const description = head.match(/<meta name="description" content="([^"]*)"/)[1]
+      expect(title.length, path).toBeLessThanOrEqual(60)
+      expect(description.length, path).toBeLessThanOrEqual(160)
+    }
+  })
+
+  it('separates the hero heading lines with spaces', async () => {
+    const home = await server.renderRoute('/')
+    const h1 = home.match(/<h1[^>]*>(.*?)<\/h1>/s)[1].replace(/<[^>]+>/g, '')
+    expect(h1).toBe('I build digital products and AI-powered apps that hold up in production.')
+  })
+
   it('renders real page content, not an empty shell', async () => {
     const about = await server.renderRoute('/about')
     expect(about).toContain('<h1')
@@ -37,7 +53,7 @@ describe('prerendered pages', () => {
   it('gives each page its own title, description and trailing-slash canonical', () => {
     const route = server.ROUTES.find((r) => r.path === '/projects/ongrid')
     const head = server.headTags(route.path, route.meta)
-    expect(head).toContain('<title>OnGrid.work case study · Vinod Kumar</title>')
+    expect(head).toContain('<title>OnGrid.work: Team Operations SaaS · Vinod Kumar</title>')
     expect(head).toContain(`<link rel="canonical" href="${SITE}/projects/ongrid/" />`)
     expect(head).toContain(`<meta property="og:url" content="${SITE}/projects/ongrid/" />`)
     expect(head).toMatch(/<meta name="description" content="OnGrid\.work /)
@@ -93,7 +109,7 @@ describe('structured data', () => {
     const article = graph.find((n) => n['@type'] === 'Article')
     expect(article).toMatchObject({
       '@id': `${SITE}/projects/moneygence/#article`,
-      headline: 'MoneyGence case study',
+      headline: 'MoneyGence: Financial Management SaaS',
       author: { '@id': `${SITE}/#person` },
       about: { name: 'MoneyGence', url: 'https://moneygence.com/' },
     })

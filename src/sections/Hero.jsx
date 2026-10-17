@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { Fragment, useRef } from 'react'
 import Container from '../components/Container.jsx'
 import Button, { ArrowIcon } from '../components/Button.jsx'
 import { LogoMark } from '../components/Logo.jsx'
@@ -71,10 +71,14 @@ export default function Hero() {
             </p>
           </div>
           <h1 className="hero__title" id="hero-title">
-            {TITLE_LINES.map((line) => (
-              <span className="hero__line" key={line}>
-                <span className="hero__line-inner">{line}</span>
-              </span>
+            {/* The spaces between lines keep the heading text readable to search engines. */}
+            {TITLE_LINES.map((line, i) => (
+              <Fragment key={line}>
+                {i > 0 && ' '}
+                <span className="hero__line">
+                  <span className="hero__line-inner">{line}</span>
+                </span>
+              </Fragment>
             ))}
           </h1>
           <p className="hero__lede">
