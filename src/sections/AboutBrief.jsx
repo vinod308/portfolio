@@ -23,7 +23,7 @@ export default function AboutBrief() {
           <SectionHeading id="about-brief-title" eyebrow="About" title="How I approach engineering" />
           <p>
             I&apos;m a full stack developer in Noida with nearly 7 years of professional experience. At Garage
-            Productions I own application modules end to end within a development team: React UI, Express.js APIs,
+            Collective I own application modules end to end within a development team: React UI, Express.js APIs,
             PostgreSQL schemas, deployment and production support.
           </p>
           <p>

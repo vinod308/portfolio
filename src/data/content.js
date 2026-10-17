@@ -32,7 +32,7 @@ export const capabilities = [
 export const experience = [
   {
     role: 'Full Stack Developer',
-    company: 'Garage Productions Pvt Ltd',
+    company: 'Garage Collective Pvt Ltd',
     location: 'Noida',
     period: 'Jun 2020 – Present',
     start: '2020-06',
