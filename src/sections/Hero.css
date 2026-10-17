@@ -47,7 +47,7 @@
 
 .hero__avatar {
   flex: none;
-  width: clamp(3.75rem, 3rem + 2vw, 5rem);
+  width: clamp(4.5rem, 3.5rem + 2.5vw, 6.25rem);
   aspect-ratio: 1;
   padding: 3px;
   border-radius: 50%;

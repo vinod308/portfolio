@@ -70,7 +70,7 @@ export default function Hero() {
             <picture className="hero__avatar">
               <source type="image/avif" srcSet={avif400} />
               <source type="image/webp" srcSet={webp400} />
-              <img src={jpg640} alt={`${site.name}, full stack developer`} width="80" height="80" fetchPriority="high" />
+              <img src={jpg640} alt={`${site.name}, full stack developer`} width="100" height="100" fetchPriority="high" />
             </picture>
             <p className="mono-label hero__eyebrow">
               {site.name} · {site.title}
