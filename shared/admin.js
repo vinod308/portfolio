@@ -4,7 +4,7 @@
 
 // Google Cloud Console > APIs & Services > Credentials > OAuth client (Web),
 // with https://vinod-kumar.in and http://localhost:5173 as JavaScript origins.
-export const GOOGLE_CLIENT_ID = ''
+export const GOOGLE_CLIENT_ID = '64296510660-d1jt2kkjbiktkvlo1k6qcomko0mfropr.apps.googleusercontent.com'
 
 /** The only Google accounts that may use /admin (lowercase). */
 export const ADMIN_EMAILS = ['vinodvinni308@gmail.com']
