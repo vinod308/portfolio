@@ -90,6 +90,9 @@ const C = {
   teal: '#48d6c5',
   green: '#1f9d55',
 }
+// Invisible spacers after the preview text, so inbox snippets don't run on
+// into the header text.
+const PREVIEW_PAD = '&#847;&zwnj;&nbsp;'.repeat(60)
 const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
 
 const button = (href, label, bg, fg = '#ffffff', border = bg) =>
@@ -117,6 +120,9 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
   const whatsapp = phone.startsWith('+') ? `https://wa.me/${digits}` : null
   const mailto = `mailto:${email}?subject=${encodeURIComponent(`Re: your message on ${site}`)}`
   const preview = inquiry.message.replace(/\s+/g, ' ').slice(0, 120)
+  // An explicit, styled link: otherwise Gmail auto-links the domain in bright blue.
+  const siteLink = (color) =>
+    `<a href="${escapeHtml(config.clientOrigins[0])}" style="color:${color};text-decoration:none">${escapeHtml(site)}</a>`
 
   const text = [
     `New portfolio inquiry from ${name}`,
@@ -138,7 +144,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
   const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>New portfolio inquiry</title></head>
 <body style="margin:0;padding:0;background:${C.page}">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${escapeHtml(`${name}: ${preview}`)}</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${escapeHtml(`${name}: ${preview}`)}${PREVIEW_PAD}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.page}"><tr><td align="center" style="padding:32px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;border-radius:14px;overflow:hidden;background:${C.card};box-shadow:0 8px 24px rgba(11,18,32,0.08)">
 
@@ -147,7 +153,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
       <td style="width:40px;height:40px;border-radius:10px;background:#16253c;border:1px solid #27354a;text-align:center;vertical-align:middle;color:${C.teal};font:700 16px ${FONT};letter-spacing:0.5px">VK</td>
       <td style="padding-left:14px">
         <div style="color:#ffffff;font:600 16px ${FONT}">New portfolio inquiry</div>
-        <div style="color:#94a3b8;font:13px ${FONT};padding-top:2px">${escapeHtml(site)} · contact form</div>
+        <div style="color:#94a3b8;font:13px ${FONT};padding-top:2px">${siteLink('#94a3b8')} · contact form</div>
       </td>
     </tr></table>
   </td></tr>
@@ -172,7 +178,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
   </td></tr>
 
   <tr><td style="padding:16px 28px;border-top:1px solid ${C.line};background:${C.soft};color:${C.muted};font:12px/1.5 ${FONT}">
-    Reply to this email to answer ${escapeHtml(name)} directly. Sent from the contact form on ${escapeHtml(site)}.
+    Reply to this email to answer ${escapeHtml(name)} directly. Sent from the contact form on ${siteLink(C.muted)}.
   </td></tr>
 
 </table>
