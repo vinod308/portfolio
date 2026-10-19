@@ -64,10 +64,10 @@ export function validateContact(values) {
   else if (!EMAIL_RE.test(email)) errors.email = 'Enter an email address like name@example.com.'
 
   const digits = phone.replace(/\D/g, '').length
-  if (!phone) errors.phone = 'Please enter your phone number.'
-  else if (phone.length > LIMITS.phone.max || !PHONE_RE.test(phone))
+  // Phone is optional; when given it must look like a real number.
+  if (phone && (phone.length > LIMITS.phone.max || !PHONE_RE.test(phone)))
     errors.phone = 'Enter a phone number like +91 98765 43210.'
-  else if (digits < LIMITS.phone.minDigits || digits > LIMITS.phone.maxDigits)
+  else if (phone && (digits < LIMITS.phone.minDigits || digits > LIMITS.phone.maxDigits))
     errors.phone = `Phone numbers have ${LIMITS.phone.minDigits} to ${LIMITS.phone.maxDigits} digits.`
 
   if (!message) errors.message = 'Please write a message.'

@@ -41,9 +41,10 @@ describe('validateContact', () => {
     expect(validateContact({ ...ok, message: 'x'.repeat(LIMITS.message.max) })).toEqual({})
   })
 
-  it('requires every field', () => {
+  it('requires every field except phone', () => {
     const empty = { firstName: '', lastName: '', email: '', phone: '', message: '' }
-    expect(Object.keys(validateContact(empty)).sort()).toEqual(['email', 'firstName', 'lastName', 'message', 'phone'])
+    expect(Object.keys(validateContact(empty)).sort()).toEqual(['email', 'firstName', 'lastName', 'message'])
+    expect(validateContact({ ...ok, phone: '' })).toEqual({})
   })
 
   it('enforces length limits', () => {

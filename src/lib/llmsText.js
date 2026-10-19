@@ -3,7 +3,7 @@
 // the pages. Case study "decisions" are left out: several are still marked
 // CONFIRM in projects.js, and these files are quoted verbatim by AI tools.
 import { site } from '../data/site.js'
-import { capabilities, experience, principles, skillGroups } from '../data/content.js'
+import { capabilities, experience, principles, skillGroups, learning } from '../data/content.js'
 import { caseStudies, projects } from '../data/projects.js'
 import { DEFAULT_DESCRIPTION, PAGE_META, SITE_URL, caseStudyMeta, pageUrl } from './pageMeta.js'
 
@@ -75,6 +75,8 @@ function caseStudySection(p) {
     '',
     `**Workflow: ${cs.workflow.title}.** ${cs.workflow.steps.map((s) => s.label).join(' → ')}`,
     '',
+    `**What it delivers.** ${cs.outcome}`,
+    '',
     `**Technologies.** ${p.stack.join(', ')}`,
   ]
 }
@@ -106,7 +108,10 @@ export function llmsFullTxt() {
     '',
     '## Skills',
     '',
-    list(skillGroups.map((g) => `**${g.title}:** ${g.items.join(', ')}`)),
+    list([
+      ...skillGroups.map((g) => `**${g.title}:** ${g.items.join(', ')}`),
+      `**Currently learning (not yet professional use):** ${learning.join(', ')}`,
+    ]),
     '',
     '## SaaS case studies',
     '',

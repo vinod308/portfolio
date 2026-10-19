@@ -23,8 +23,8 @@ export default function Contact() {
       <Container>
         <PageHeader
           eyebrow="Contact"
-          title="Let's talk about what you're building"
-          description="Engineering roles, product development or AI integration work: send a message and I'll reply by email."
+          title="Let's talk about engineering opportunities"
+          description="Full stack engineering roles, product development or AI integration work. Name, email and a message are all I need; I'll reply by email."
         />
 
         <div className="contact-layout">

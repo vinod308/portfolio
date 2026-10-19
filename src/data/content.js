@@ -99,9 +99,7 @@ export const skillGroups = [
     items: ['Linux/Ubuntu', 'Nginx', 'Apache', 'AWS', 'DigitalOcean', 'Linode', 'Hostinger', 'DNS & domains', 'Server & site migration', 'Production troubleshooting'],
   },
   { title: 'CMS / e-commerce', items: ['WordPress', 'WooCommerce', 'Elementor', 'Shopify', 'PHP'] },
-  {
-    title: 'Exploring (not yet professional use)',
-    muted: true,
-    items: ['MongoDB', 'JWT authentication', 'RAG', 'Embeddings & vector databases', 'Tool/function calling', 'LLM evaluation', 'Docker', 'TypeScript', 'System design'],
-  },
 ]
+
+// Shown separately and lighter than skillGroups: not yet used professionally.
+export const learning = ['MongoDB', 'JWT authentication', 'RAG', 'Embeddings & vector databases', 'Tool/function calling', 'LLM evaluation', 'Docker', 'TypeScript', 'System design']

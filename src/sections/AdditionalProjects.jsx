@@ -3,13 +3,12 @@ import Container from '../components/Container.jsx'
 import SectionHeading from '../components/SectionHeading.jsx'
 import { ArrowIcon, ExternalIcon } from '../components/Button.jsx'
 import { Link } from 'react-router'
-import { projects, hostOf } from '../data/projects.js'
+import { projects, hostOf, isCompact } from '../data/projects.js'
 import { useMotion, reveal } from '../lib/motion.js'
 import './AdditionalProjects.css'
 
-const isCms = (p) => ['WordPress', 'PHP'].includes(p.stack[0])
-const additionalProjects = projects.filter((p) => !p.featured && !isCms(p))
-const cmsProjects = projects.filter(isCms)
+const additionalProjects = projects.filter((p) => !p.featured && !isCompact(p))
+const cmsProjects = projects.filter(isCompact)
 
 export default function AdditionalProjects() {
   const ref = useRef(null)
@@ -42,7 +41,7 @@ export default function AdditionalProjects() {
             <li className="mini-card" key={p.name}>
               <p className="mini-card__kind mono-label">{p.kind}</p>
               <h3 className="mini-card__name">{p.name}</h3>
-              <p className="mini-card__body">{p.body}</p>
+              <p className="mini-card__body">{p.summary}</p>
               <ul className="chips" role="list" aria-label="Technologies">
                 {p.stack.map((t) => (
                   <li className="chip" key={t}>

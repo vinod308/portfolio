@@ -37,6 +37,11 @@
   color: var(--color-signal);
 }
 
+.field__label .field__optional {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-regular);
+}
+
 .field__input {
   width: 100%;
   min-height: 2.875rem;

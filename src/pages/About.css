@@ -98,14 +98,21 @@
   font-size: var(--text-base);
 }
 
-.stack-group--muted .stack-group__title {
+.stack-learning {
+  max-width: 44rem;
   color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 
-.stack-group--muted .chip {
-  border-style: dashed;
+.stack-learning .mono-label {
+  margin-right: var(--space-2);
 }
 
-.about-page .experience {
-  border-top: 1px solid var(--color-border);
+/* Background */
+.about-background {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  max-width: 40rem;
+  color: var(--color-text-muted);
 }

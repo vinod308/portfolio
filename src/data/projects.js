@@ -65,6 +65,9 @@ export const projects = [
           body: 'Owning specific modules in a shared codebase means agreeing explicit API contracts, so my modules and the rest of the platform can change independently.',
         },
       ],
+      // TODO(Vinod): add one real engineering challenge from these modules (problem, options, choice, trade-off).
+      outcome:
+        'Invoicing, receivables and reports as working modules of MoneyGence: service businesses can raise invoices, follow what is still owed and report on billed and collected amounts from the same records.',
     },
   },
   {
@@ -116,6 +119,9 @@ export const projects = [
           body: 'Each provider integration feeds the same processing and storage workflow, so results can be compared across providers and over time.',
         },
       ],
+      // TODO(Vinod): name the 4 providers and add one real challenge (e.g. how provider failures or differing response formats were handled).
+      outcome:
+        'Responses from 4 AI providers are processed by one backend workflow and stored in PostgreSQL, the data that Haylow.ai’s visibility analytics and competitor reporting are built on.',
     },
   },
   {
@@ -166,6 +172,9 @@ export const projects = [
           body: 'Explicit endpoint contracts, request validation and error handling keep the React interfaces and Express services decoupled as modules grow.',
         },
       ],
+      // TODO(Vinod): add one real challenge distinct from MoneyGence and Haylow (e.g. a workload or approval rule).
+      outcome:
+        'The core modules of OnGrid.work: one workspace where projects, tasks and their owners, workload and approvals are connected, from the React interfaces down to the REST APIs and data models.',
     },
   },
   {
@@ -265,6 +274,8 @@ export const projects = [
 
 export const featuredProjects = projects.filter((p) => p.featured)
 export const caseStudies = projects.filter((p) => p.caseStudy)
+// Smaller WordPress / PHP client sites: listed compactly, not as full cards.
+export const isCompact = (p) => ['WordPress', 'PHP'].includes(p.stack[0])
 
 export const getProject = (slug) => projects.find((p) => p.slug === slug)
 

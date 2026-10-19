@@ -163,18 +163,18 @@ function Detail({ item, busy, onStatus }) {
           <a href={mailto}>{item.email}</a>
         </dd>
         <dt>Phone</dt>
-        <dd>
-          <a href={tel}>{item.phone}</a>
-        </dd>
+        <dd>{item.phone ? <a href={tel}>{item.phone}</a> : 'Not given'}</dd>
       </dl>
       <p className="inq__message">{item.message}</p>
       <div className="inq__actions">
         <a className="adm-primary inq__btn" href={mailto}>
           Reply by email
         </a>
-        <a className="inq__btn inq__btn--ghost" href={tel}>
-          Call
-        </a>
+        {item.phone && (
+          <a className="inq__btn inq__btn--ghost" href={tel}>
+            Call
+          </a>
+        )}
         {item.phone.startsWith('+') && (
           <a className="inq__btn inq__btn--ghost" href={`https://wa.me/${digits}`} target="_blank" rel="noopener noreferrer">
             WhatsApp

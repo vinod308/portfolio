@@ -4,7 +4,7 @@ import Container from '../components/Container.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import ProjectCard from '../components/ProjectCard.jsx'
 import Button from '../components/Button.jsx'
-import { CATEGORIES, projects } from '../data/projects.js'
+import { CATEGORIES, projects, isCompact, hostOf } from '../data/projects.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
 import { PAGE_META } from '../lib/pageMeta.js'
 import { useHydrated } from '../lib/useHydrated.js'
@@ -20,6 +20,8 @@ export default function Projects() {
   const requested = useHydrated() ? params.get('category') : null
   const active = FILTERS.some((f) => f.id === requested) ? requested : 'all'
   const visible = active === 'all' ? projects : projects.filter((p) => p.categories.includes(active))
+  const cards = visible.filter((p) => !isCompact(p))
+  const compact = visible.filter(isCompact)
   const gridRef = useRef(null)
   const firstRun = useRef(true)
 
@@ -84,13 +86,38 @@ export default function Projects() {
         </p>
 
         {visible.length > 0 ? (
-          <ul className="projects-grid" role="list" ref={gridRef}>
-            {visible.map((p) => (
-              <li className="projects-grid__item" key={p.slug}>
-                <ProjectCard project={p} />
-              </li>
-            ))}
-          </ul>
+          <div ref={gridRef}>
+            {cards.length > 0 && (
+              <ul className="projects-grid" role="list">
+                {cards.map((p) => (
+                  <li className="projects-grid__item" key={p.slug}>
+                    <ProjectCard project={p} />
+                  </li>
+                ))}
+              </ul>
+            )}
+            {compact.length > 0 && (
+              <section className="archive-compact projects-grid__item" aria-labelledby="archive-compact-title">
+                <h2 className="mono-label archive-compact__title" id="archive-compact-title">
+                  WordPress &amp; PHP client websites
+                </h2>
+                <ul className="archive-compact__list" role="list">
+                  {compact.map((p) => (
+                    <li className="archive-compact__item" key={p.slug}>
+                      <span className="archive-compact__name">{p.name}</span>
+                      <span className="archive-compact__tech">{p.stack[0]}</span>
+                      {p.href && (
+                        <a className="text-link text-link--muted" href={p.href} target="_blank" rel="noopener noreferrer">
+                          {hostOf(p.href)}
+                          <span className="visually-hidden"> (opens in a new tab)</span>
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
         ) : (
           <div className="projects-empty">
             <p className="projects-empty__title">No projects in {activeLabel} yet.</p>

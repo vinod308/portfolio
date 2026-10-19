@@ -1,18 +1,21 @@
 import { useRef } from 'react'
+import { Link } from 'react-router'
 import Container from '../components/Container.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import SectionHeading from '../components/SectionHeading.jsx'
 import Portrait from '../components/Portrait.jsx'
-import CapabilityList from '../components/CapabilityList.jsx'
 import Button, { ArrowIcon } from '../components/Button.jsx'
-import Experience from '../sections/Experience.jsx'
 import ContactCTA from '../sections/ContactCTA.jsx'
-import { principles, skillGroups } from '../data/content.js'
+import { principles, skillGroups, learning, experience } from '../data/content.js'
 import { site } from '../data/site.js'
 import { usePageMeta } from '../lib/usePageMeta.js'
 import { PAGE_META } from '../lib/pageMeta.js'
 import { useMotion, reveal } from '../lib/motion.js'
 import './About.css'
+
+// The homepage carries the full timeline and the capability list; this page
+// covers how I work, a short background and the complete technology list.
+const [current, first] = experience
 
 export default function About() {
   usePageMeta(PAGE_META.about)
@@ -31,7 +34,7 @@ export default function About() {
         <PageHeader
           eyebrow="About"
           title="I build full stack products and keep them running"
-          description="Full stack developer in Noida with nearly 7 years of professional experience. I own application modules end to end within a development team, from React UI and Express.js APIs to PostgreSQL schemas, deployment and production support."
+          description="I work across the stack on SaaS products: turning product requirements into React interfaces, Express.js APIs and PostgreSQL data models, then deploying and supporting them on Linux servers."
           aside={<Portrait eager />}
         >
           <p className="about-intro">
@@ -61,21 +64,30 @@ export default function About() {
           </ol>
         </section>
 
-        <section className="about-block about-block--split" aria-labelledby="caps-title">
-          <SectionHeading
-            id="caps-title"
-            eyebrow="Capabilities"
-            title="What I work on"
-            description="Five areas I work across, with the technologies I use in each."
-          />
-          <CapabilityList headingLevel={3} />
+        <section className="about-block about-block--split" aria-labelledby="background-title">
+          <SectionHeading id="background-title" eyebrow="Background" title="Where I've worked" />
+          <div className="about-background about-reveal">
+            <p>
+              I have {site.experience.toLowerCase()} of professional experience. I started in {first.period.split(' – ')[0]} as a{' '}
+              {first.role} at {first.company}, delivering client WordPress websites and administering Apache and Nginx
+              servers.
+            </p>
+            <p>
+              Since {current.period.split(' – ')[0]} I&apos;ve been a {current.role} at {current.company}, owning
+              application modules within a development team, integrating AI as a backend service layer, and deploying
+              and maintaining 15+ client applications on Linux servers.
+            </p>
+            <Link className="text-link" to="/#experience">
+              Full experience timeline <ArrowIcon />
+            </Link>
+          </div>
         </section>
 
         <section className="about-block" aria-labelledby="stack-title">
-          <SectionHeading id="stack-title" eyebrow="Stack" title="Technologies" />
+          <SectionHeading id="stack-title" eyebrow="Stack" title="Technologies I use professionally" />
           <div className="stack-groups">
             {skillGroups.map((g) => (
-              <div className={`stack-group about-reveal ${g.muted ? 'stack-group--muted' : ''}`} key={g.title}>
+              <div className="stack-group about-reveal" key={g.title}>
                 <h3 className="stack-group__title">{g.title}</h3>
                 <ul className="chips" role="list">
                   {g.items.map((t) => (
@@ -87,10 +99,12 @@ export default function About() {
               </div>
             ))}
           </div>
+          <p className="stack-learning about-reveal">
+            <span className="mono-label">Currently learning</span> {learning.join(' · ')}
+          </p>
         </section>
       </Container>
 
-      <Experience />
       <ContactCTA />
     </div>
   )

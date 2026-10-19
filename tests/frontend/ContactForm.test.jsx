@@ -35,7 +35,7 @@ describe('ContactForm', () => {
     expect(screen.getByText('Please enter your first name.')).toBeVisible()
     expect(screen.getByText('Please enter your last name.')).toBeVisible()
     expect(screen.getByText('Please enter your email address.')).toBeVisible()
-    expect(screen.getByText('Please enter your phone number.')).toBeVisible()
+    expect(screen.getByLabelText(/^Phone/)).not.toHaveAttribute('aria-invalid')
     expect(screen.getByLabelText(/^First name/)).toHaveFocus()
     expect(screen.getByLabelText(/^First name/)).toHaveAttribute('aria-invalid', 'true')
     expect(fetchMock).not.toHaveBeenCalled()

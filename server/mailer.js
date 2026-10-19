@@ -128,7 +128,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
     `First name: ${headerSafe(inquiry.firstName, 50)}`,
     `Last name:  ${headerSafe(inquiry.lastName, 50)}`,
     `Email:      ${email}`,
-    `Phone:      ${phone}`,
+    `Phone:      ${phone || 'Not given'}`,
     `Received:   ${when}`,
     '',
     'Message',
@@ -160,7 +160,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
   <tr><td style="padding:26px 28px 8px">
     <div style="color:${C.muted};font:600 12px ${FONT};letter-spacing:1px;text-transform:uppercase">From</div>
     <div style="color:${C.text};font:700 24px ${FONT};padding:6px 0 18px">${escapeHtml(name)}</div>
-    <div>${button(mailto, `Reply to ${escapeHtml(firstName)}`)}${button(tel, 'Call')}${whatsapp ? button(whatsapp, 'WhatsApp') : ''}</div>
+    <div>${button(mailto, `Reply to ${escapeHtml(firstName)}`)}${phone ? button(tel, 'Call') : ''}${whatsapp ? button(whatsapp, 'WhatsApp') : ''}</div>
   </td></tr>
 
   <tr><td style="padding:12px 28px 4px">
@@ -168,7 +168,7 @@ export function buildMessage(inquiry, config, receivedAt = new Date()) {
       ${detail('First name', escapeHtml(headerSafe(inquiry.firstName, 50)))}
       ${detail('Last name', escapeHtml(headerSafe(inquiry.lastName, 50)))}
       ${detail('Email', link(mailto, email))}
-      ${detail('Phone', link(tel, phone))}
+      ${detail('Phone', phone ? link(tel, phone) : 'Not given')}
       ${detail('Received', escapeHtml(when))}
     </table>
   </td></tr>

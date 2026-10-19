@@ -46,8 +46,17 @@ describe('POST /api/contact: validation', () => {
     const { app, transport } = makeApp()
     const res = await post(app, { website: '', elapsedMs: 9000 })
     expect(res.status).toBe(422)
-    expect(Object.keys(res.body.errors).sort()).toEqual(['email', 'firstName', 'lastName', 'message', 'phone'])
+    expect(Object.keys(res.body.errors).sort()).toEqual(['email', 'firstName', 'lastName', 'message'])
     expect(transport.sendMail).not.toHaveBeenCalled()
+  })
+
+  it('accepts a message without a phone number and leaves out the Call button', async () => {
+    const { app, transport } = makeApp()
+    const res = await post(app, { ...validBody, phone: '' })
+    expect(res.status).toBe(200)
+    const msg = transport.sendMail.mock.calls[0][0]
+    expect(msg.text).toContain('Phone:      Not given')
+    expect(msg.html).not.toContain('href="tel:')
   })
 
   it('rejects an invalid email address', async () => {

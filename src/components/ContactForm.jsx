@@ -153,7 +153,8 @@ export default function ContactForm() {
           field={field('phone')}
           error={errorFor('phone')}
           label="Phone"
-          hint="Required. Include the country code, for example +91."
+          optional
+          hint="Optional. Include the country code, for example +91."
           type="tel"
           inputMode="tel"
           autoComplete="tel"
@@ -210,7 +211,7 @@ export default function ContactForm() {
           {status === 'submitting' ? 'Sending your message' : ''}
         </span>
         <p className="contact-form__privacy" id={id('privacy')}>
-          Your name, email, phone number and message are used only to reply to this inquiry. They are not added to
+          Your name, email, phone number (if given) and message are used only to reply to this inquiry. They are not added to
           a mailing list or shared.
         </p>
       </div>
@@ -218,13 +219,13 @@ export default function ContactForm() {
   )
 }
 
-function TextField({ field, error, label, hint, type = 'text', ...rest }) {
+function TextField({ field, error, label, hint, type = 'text', optional = false, ...rest }) {
   return (
     <div className="field">
       <label className="field__label" htmlFor={field.id}>
-        {label} <span aria-hidden="true">*</span>
+        {label} {optional ? <span className="field__optional">(optional)</span> : <span aria-hidden="true">*</span>}
       </label>
-      <input {...field} {...rest} className="field__input" type={type} required />
+      <input {...field} {...rest} className="field__input" type={type} required={!optional} />
       <FieldError id={`${field.id}-error`} message={error} />
       <span className="visually-hidden" id={`${field.id}-hint`}>
         {hint}

@@ -18,6 +18,7 @@ const SECTIONS = [
   { id: 'implementation', label: 'Implementation' },
   { id: 'workflow', label: 'Workflow' },
   { id: 'decisions', label: 'Decisions' },
+  { id: 'outcome', label: 'Outcome' },
   { id: 'stack', label: 'Technologies' },
 ]
 
@@ -165,7 +166,11 @@ function CaseStudy({ project: p }) {
               </ul>
             </Section>
 
-            <Section id="stack" n={6} title="Technologies used">
+            <Section id="outcome" n={6} title="What it delivers">
+              <p className="study-lede study-reveal">{cs.outcome}</p>
+            </Section>
+
+            <Section id="stack" n={7} title="Technologies used">
               <ul className="chips chips--lg study-reveal" role="list">
                 {p.stack.map((t) => (
                   <li className="chip" key={t}>
