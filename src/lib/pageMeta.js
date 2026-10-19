@@ -22,9 +22,9 @@ export const PAGE_META = {
       'About Vinod Kumar: full stack developer in Noida with nearly 7 years of experience in React, Node.js, PostgreSQL, AI integrations and production deployment.',
   },
   contact: {
-    title: 'Contact for Full Stack & AI Roles',
+    title: 'Contact Vinod Kumar · Full Stack & AI Engineer',
     description:
-      'Contact Vinod Kumar about full stack engineering roles, product development or AI integration work. Email vinodvinni308@gmail.com.',
+      'Contact Vinod Kumar about product development, full stack projects or AI integration work. Email vinodvinni308@gmail.com.',
   },
   notFound: { title: 'Page not found', description: 'This page does not exist on Vinod Kumar’s portfolio.' },
 }

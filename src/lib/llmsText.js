@@ -122,7 +122,7 @@ export function llmsFullTxt() {
     '',
     '## Contact',
     '',
-    `Email ${site.email} or use the form at ${pageUrl('/contact')} about full stack engineering roles, product development or AI integration work.`,
+    `Email ${site.email} or use the form at ${pageUrl('/contact')} about product development, full stack projects or AI integration work.`,
     '',
   ].join('\n')
 }

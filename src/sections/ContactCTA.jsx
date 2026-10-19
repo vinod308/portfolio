@@ -33,8 +33,7 @@ export default function ContactCTA() {
               Have an interesting engineering challenge?
             </h2>
             <p className="cta__text">
-              I&apos;m open to full stack engineering roles, and happy to talk about product development or AI
-              integration work.
+              Happy to talk about product development, full stack projects or AI integration work.
             </p>
             <div className="cta__actions">
               <Button to="/contact" size="lg" icon={<ArrowIcon />}>

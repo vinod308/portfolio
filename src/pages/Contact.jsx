@@ -23,8 +23,8 @@ export default function Contact() {
       <Container>
         <PageHeader
           eyebrow="Contact"
-          title="Let's talk about engineering opportunities"
-          description="Full stack engineering roles, product development or AI integration work. Name, email and a message are all I need; I'll reply by email."
+          title="Let's talk engineering"
+          description="Product development, full stack projects or AI integration work. Name, email and a message are all I need; I'll reply by email."
         />
 
         <div className="contact-layout">
@@ -37,7 +37,7 @@ export default function Contact() {
                 {site.email}
               </a>
               <p className="contact-direct__text">
-                Tell me a little about the role, project or AI feature you have in mind, and I&apos;ll reply by
+                Tell me a little about the project or AI feature you have in mind, and I&apos;ll reply by
                 email.
               </p>
               <Button href={`mailto:${site.email}`} size="lg" icon={<ArrowIcon />}>
